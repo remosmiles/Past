@@ -2,10 +2,9 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zeitreise</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Zeitreise OS</title>
     
-    <!-- Lade moderne und retro Schriftarten -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&family=Pixelify+Sans:wght@400;600&display=swap" rel="stylesheet">
@@ -14,9 +13,13 @@
         :root {
             --modern-bg: #0f172a;
             --modern-text: #f8fafc;
-            --retro-bg: #008080; /* Klassisches Windows Türkis */
+            --retro-bg: #008080;
             --win-gray: #c0c0c0;
             --win-blue: #000080;
+            --win-light: #ffffff;
+            --win-dark: #000000;
+            --win-mid: #808080;
+            --win-light-gray: #dfdfdf;
         }
 
         body, html {
@@ -26,11 +29,9 @@
             height: 100%;
             overflow: hidden;
             user-select: none;
+            background-color: var(--modern-bg);
         }
 
-        /* =========================================
-           MODERNER MODUS (Startzustand)
-           ========================================= */
         #modern-view {
             width: 100vw;
             height: 100vh;
@@ -41,11 +42,11 @@
             align-items: center;
             font-family: 'Inter', sans-serif;
             color: var(--modern-text);
-            transition: opacity 0.2s ease-out, transform 0.3s ease-in;
+            transition: opacity 0.5s ease-out, transform 0.5s ease-in;
             position: absolute;
             top: 0;
             left: 0;
-            z-index: 10;
+            z-index: 100;
         }
 
         .title-modern {
@@ -53,8 +54,8 @@
             font-weight: 300;
             letter-spacing: 0.2rem;
             margin-bottom: 3rem;
-            opacity: 0.9;
             text-align: center;
+            padding: 0 20px;
         }
 
         .btn-modern {
@@ -68,8 +69,6 @@
             cursor: pointer;
             box-shadow: 0 10px 25px rgba(139, 92, 246, 0.4);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
         }
 
         .btn-modern:hover {
@@ -77,13 +76,6 @@
             box-shadow: 0 15px 35px rgba(139, 92, 246, 0.6);
         }
 
-        .btn-modern:active {
-            transform: translateY(1px);
-        }
-
-        /* =========================================
-           RETRO MODUS (Windows 95/98)
-           ========================================= */
         #retro-view {
             display: none;
             width: 100vw;
@@ -93,8 +85,7 @@
             position: absolute;
             top: 0;
             left: 0;
-            z-index: 5;
-            /* Eigener verpixelter Cursor via SVG */
+            z-index: 1;
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="28" shape-rendering="crispEdges"><path fill="black" d="M0,0 l14,14 h-6 l3.5,7 l-2.5,1 l-3.5,-7 l-3.5,3.5 Z"/><path fill="white" d="M1,2 l10,10 h-4.5 l3.5,7 l-0.5,0.5 l-3.5,-7 l-3,3 Z"/></svg>'), auto;
         }
 
@@ -102,19 +93,29 @@
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="28" shape-rendering="crispEdges"><path fill="black" d="M0,0 l14,14 h-6 l3.5,7 l-2.5,1 l-3.5,-7 l-3.5,3.5 Z"/><path fill="white" d="M1,2 l10,10 h-4.5 l3.5,7 l-0.5,0.5 l-3.5,-7 l-3,3 Z"/></svg>'), auto !important;
         }
 
+        .desktop-icons-container {
+            position: relative;
+            width: 100%;
+            height: calc(100% - 32px); /* Minus Taskleiste */
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
         .desktop-icon {
             position: absolute;
-            width: 76px;
+            width: 80px;
             display: flex;
             flex-direction: column;
             align-items: center;
             text-align: center;
+            padding: 5px;
+            box-sizing: border-box;
         }
 
         .desktop-icon svg {
-            width: 42px;
-            height: 42px;
-            margin-bottom: 5px;
+            width: 40px;
+            height: 40px;
+            margin-bottom: 4px;
             shape-rendering: crispEdges;
         }
 
@@ -123,54 +124,66 @@
             font-size: 13px;
             padding: 2px 4px;
             text-shadow: 1px 1px 0 #000;
+            line-height: 1.2;
+            word-wrap: break-word;
+            max-width: 100%;
         }
 
-        .desktop-icon:active span, .desktop-icon.interactive:active span {
-            background-color: #000080;
+        .desktop-icon:active span, .desktop-icon.selected span {
+            background-color: var(--win-blue);
             border: 1px dotted white;
             text-shadow: none;
+            padding: 1px 3px;
         }
 
-        .interactive {
-            /* Zentrierte Position für den geheimen Ordner */
+        /* Icon Positionen */
+        .icon-pos-1 { top: 10px; left: 10px; }
+        .icon-pos-2 { top: 90px; left: 10px; }
+        .icon-pos-3 { top: 170px; left: 10px; }
+        .icon-pos-4 { top: 250px; left: 10px; }
+        .icon-pos-5 { top: 10px; left: 100px; }
+        .icon-pos-6 { top: 90px; left: 100px; }
+        
+        .interactive-center {
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
+            width: 100px;
         }
-
-        /* Feste Positionen für Hintergrund-Icons */
-        .icon-computer { top: 20px; left: 20px; }
-        .icon-trash { top: 110px; left: 20px; }
-        .icon-notepad { top: 200px; left: 20px; }
-        .icon-internet { top: 20px; left: 110px; }
+        .interactive-center svg {
+            width: 50px;
+            height: 50px;
+        }
 
         .win95-border {
             background-color: var(--win-gray);
-            border-top: 2px solid #ffffff;
-            border-left: 2px solid #ffffff;
-            border-right: 2px solid #000000;
-            border-bottom: 2px solid #000000;
-            box-shadow: inset 1px 1px 0px #dfdfdf, inset -1px -1px 0px #808080;
+            border-top: 2px solid var(--win-light);
+            border-left: 2px solid var(--win-light);
+            border-right: 2px solid var(--win-dark);
+            border-bottom: 2px solid var(--win-dark);
+            box-shadow: inset 1px 1px 0px var(--win-light-gray), inset -1px -1px 0px var(--win-mid);
         }
 
-        .win95-border-inset {
-            background-color: #ffffff;
-            border-top: 2px solid #808080;
-            border-left: 2px solid #808080;
-            border-right: 2px solid #ffffff;
-            border-bottom: 2px solid #ffffff;
-            box-shadow: inset 1px 1px 0px #000000, inset -1px -1px 0px #dfdfdf;
+        .win95-inset {
+            background-color: var(--win-light);
+            border-top: 2px solid var(--win-mid);
+            border-left: 2px solid var(--win-mid);
+            border-right: 2px solid var(--win-light);
+            border-bottom: 2px solid var(--win-light);
+            box-shadow: inset 1px 1px 0px var(--win-dark), inset -1px -1px 0px var(--win-light-gray);
         }
 
-        #retro-window {
+        .window {
             display: none;
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 400px;
             padding: 2px;
             z-index: 20;
+            min-width: 300px;
+            max-width: 90vw;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.5);
         }
 
         .title-bar {
@@ -187,10 +200,10 @@
 
         .close-btn {
             background-color: var(--win-gray);
-            border-top: 2px solid #ffffff;
-            border-left: 2px solid #ffffff;
-            border-right: 2px solid #000000;
-            border-bottom: 2px solid #000000;
+            border-top: 2px solid var(--win-light);
+            border-left: 2px solid var(--win-light);
+            border-right: 2px solid var(--win-dark);
+            border-bottom: 2px solid var(--win-dark);
             font-family: inherit;
             font-weight: bold;
             font-size: 12px;
@@ -200,29 +213,25 @@
             justify-content: center;
             align-items: center;
             padding: 0;
-            box-shadow: inset 1px 1px 0px #dfdfdf, inset -1px -1px 0px #808080;
+            box-shadow: inset 1px 1px 0px var(--win-light-gray), inset -1px -1px 0px var(--win-mid);
         }
 
         .close-btn:active {
-            border-top: 2px solid #000000;
-            border-left: 2px solid #000000;
-            border-right: 2px solid #ffffff;
-            border-bottom: 2px solid #ffffff;
-            box-shadow: inset 1px 1px 0px #808080, inset -1px -1px 0px #dfdfdf;
+            border-top: 2px solid var(--win-dark);
+            border-left: 2px solid var(--win-dark);
+            border-right: 2px solid var(--win-light);
+            border-bottom: 2px solid var(--win-light);
+            box-shadow: inset 1px 1px 0px var(--win-mid), inset -1px -1px 0px var(--win-light-gray);
             padding-top: 2px;
             padding-left: 2px;
         }
 
         .window-content {
-            padding: 20px;
+            padding: 15px;
             color: #000;
             font-size: 16px;
             text-align: center;
-        }
-
-        .message-text {
-            margin-bottom: 25px;
-            line-height: 1.4;
+            background: var(--win-gray);
         }
 
         .progress-container {
@@ -233,6 +242,7 @@
             gap: 2px;
             box-sizing: border-box;
             background-color: var(--win-gray);
+            margin-top: 20px;
         }
 
         .progress-block {
@@ -241,6 +251,37 @@
             background-color: var(--win-blue);
         }
 
+        /* Snake Game Container */
+        #snake-canvas {
+            background-color: #000;
+            display: block;
+            margin: 0 auto;
+            border: 2px solid var(--win-mid);
+        }
+        
+        .d-pad {
+            display: grid;
+            grid-template-columns: 40px 40px 40px;
+            grid-template-rows: 40px 40px;
+            gap: 5px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+        .d-pad button {
+            background: var(--win-gray);
+            border: 2px solid;
+            border-color: var(--win-light) var(--win-dark) var(--win-dark) var(--win-light);
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .d-pad button:active {
+            border-color: var(--win-dark) var(--win-light) var(--win-light) var(--win-dark);
+        }
+        .btn-up { grid-column: 2; grid-row: 1; }
+        .btn-left { grid-column: 1; grid-row: 2; }
+        .btn-down { grid-column: 2; grid-row: 2; }
+        .btn-right { grid-column: 3; grid-row: 2; }
+
         .taskbar {
             position: absolute;
             bottom: 0;
@@ -248,7 +289,7 @@
             width: 100%;
             height: 32px;
             background-color: var(--win-gray);
-            border-top: 2px solid #ffffff;
+            border-top: 2px solid var(--win-light);
             display: flex;
             align-items: center;
             padding: 2px;
@@ -266,12 +307,17 @@
             gap: 4px;
             color: black;
         }
-
-        .start-btn svg {
-            width: 16px;
-            height: 16px;
-        }
         
+        .start-btn:active {
+            border-top: 2px solid var(--win-dark);
+            border-left: 2px solid var(--win-dark);
+            border-right: 2px solid var(--win-light);
+            border-bottom: 2px solid var(--win-light);
+            box-shadow: inset 1px 1px 0px var(--win-mid), inset -1px -1px 0px var(--win-light-gray);
+            padding-top: 1px;
+            padding-left: 9px;
+        }
+
         .taskbar-tray {
             margin-left: auto;
             height: 100%;
@@ -292,73 +338,141 @@
 
     <div id="retro-view">
         
-        <!-- Hintergrund-Icons (Nicht interaktiv) -->
-        <div class="desktop-icon icon-computer">
-            <svg viewBox="0 0 64 64">
-                <rect x="12" y="12" width="40" height="28" fill="#fff" stroke="#000" stroke-width="2"/>
-                <rect x="16" y="16" width="32" height="20" fill="#008080" />
-                <rect x="24" y="40" width="16" height="8" fill="#c0c0c0" stroke="#000" stroke-width="2"/>
-                <rect x="12" y="48" width="40" height="8" fill="#c0c0c0" stroke="#000" stroke-width="2"/>
-            </svg>
-            <span>Arbeitsplatz</span>
+        <div class="desktop-icons-container">
+            <!-- Icon: Arbeitsplatz -->
+            <div class="desktop-icon icon-pos-1" onclick="openQuoteWindow('Arbeitsplatz', 'Verberge deine Absichten.')">
+                <svg viewBox="0 0 64 64">
+                    <rect x="12" y="12" width="40" height="28" fill="#fff" stroke="#000" stroke-width="2"/>
+                    <rect x="16" y="16" width="32" height="20" fill="#008080" />
+                    <rect x="24" y="40" width="16" height="8" fill="#c0c0c0" stroke="#000" stroke-width="2"/>
+                    <rect x="12" y="48" width="40" height="8" fill="#c0c0c0" stroke="#000" stroke-width="2"/>
+                </svg>
+                <span>Arbeitsplatz</span>
+            </div>
+
+            <!-- Icon: Papierkorb -->
+            <div class="desktop-icon icon-pos-2" onclick="openQuoteWindow('Papierkorb', 'Die Katze muss gerettet werden!')">
+                <svg viewBox="0 0 64 64">
+                    <path d="M16 20 h32 l-4 36 h-24 z" fill="#fff" stroke="#000" stroke-width="2"/>
+                    <rect x="12" y="12" width="40" height="8" fill="#c0c0c0" stroke="#000" stroke-width="2"/>
+                    <rect x="28" y="6" width="8" height="6" fill="#c0c0c0" stroke="#000" stroke-width="2"/>
+                    <line x1="24" y1="24" x2="24" y2="52" stroke="#000" stroke-width="2"/>
+                    <line x1="32" y1="24" x2="32" y2="52" stroke="#000" stroke-width="2"/>
+                    <line x1="40" y1="24" x2="40" y2="52" stroke="#000" stroke-width="2"/>
+                </svg>
+                <span>Papierkorb</span>
+            </div>
+
+            <!-- Icon: Editor -->
+            <div class="desktop-icon icon-pos-3" onclick="openQuoteWindow('Editor', 'Ich werde der König der Piraten!')">
+                <svg viewBox="0 0 64 64">
+                    <rect x="16" y="8" width="32" height="48" fill="#fff" stroke="#000" stroke-width="2"/>
+                    <rect x="16" y="8" width="32" height="10" fill="#000080" stroke="#000" stroke-width="2"/>
+                    <line x1="22" y1="26" x2="42" y2="26" stroke="#000" stroke-width="2"/>
+                    <line x1="22" y1="34" x2="42" y2="34" stroke="#000" stroke-width="2"/>
+                    <line x1="22" y1="42" x2="38" y2="42" stroke="#000" stroke-width="2"/>
+                </svg>
+                <span>Editor</span>
+            </div>
+
+            <!-- Icon: Internet -->
+            <div class="desktop-icon icon-pos-4" onclick="openQuoteWindow('Internet', 'Bambus News: Alles was du wissen musst.')">
+                <svg viewBox="0 0 64 64">
+                    <circle cx="32" cy="32" r="24" fill="#fff" stroke="#000" stroke-width="2"/>
+                    <path d="M14,32 Q32,8 50,32 Q32,56 14,32" fill="none" stroke="#000080" stroke-width="2"/>
+                    <path d="M32,8 Q16,32 32,56 Q48,32 32,8" fill="none" stroke="#000080" stroke-width="2"/>
+                    <line x1="8" y1="32" x2="56" y2="32" stroke="#000080" stroke-width="2"/>
+                </svg>
+                <span>Internet</span>
+            </div>
+
+            <!-- Icon: Paint -->
+            <div class="desktop-icon icon-pos-5" onclick="openQuoteWindow('Paint', 'Kunst wäscht den Staub des Alltags von der Seele.')">
+                <svg viewBox="0 0 64 64">
+                    <ellipse cx="32" cy="32" rx="24" ry="20" fill="#fff" stroke="#000" stroke-width="2"/>
+                    <circle cx="20" cy="26" r="4" fill="#f00"/>
+                    <circle cx="32" cy="20" r="4" fill="#0f0"/>
+                    <circle cx="44" cy="26" r="4" fill="#00f"/>
+                    <circle cx="38" cy="38" r="4" fill="#ff0"/>
+                    <circle cx="24" cy="40" r="4" fill="#000"/>
+                </svg>
+                <span>Paint</span>
+            </div>
+
+            <!-- Icon: P.enis.jpg -->
+            <div class="desktop-icon icon-pos-6" onclick="openQuoteWindow('Bildanzeige', 'Ein Bild sagt mehr als tausend Worte.')">
+                <svg viewBox="0 0 64 64">
+                    <rect x="12" y="14" width="40" height="36" fill="#fff" stroke="#000" stroke-width="2"/>
+                    <circle cx="22" cy="24" r="4" fill="#ffeb3b" stroke="#000" stroke-width="1"/>
+                    <polygon points="12,50 32,30 42,40 48,34 52,40 52,50" fill="#4caf50" stroke="#000" stroke-width="1"/>
+                </svg>
+                <span>P.enis.jpg</span>
+            </div>
+
+            <!-- Icon: Geheimnis (Zentriert) -->
+            <div class="desktop-icon interactive-center" onclick="openSecretWindow()">
+                <svg viewBox="0 0 64 64">
+                    <rect x="6" y="12" width="26" height="10" fill="#fbc02d" stroke="#000" stroke-width="2"/>
+                    <rect x="6" y="20" width="52" height="34" fill="#fff59d" stroke="#000" stroke-width="2"/>
+                    <rect x="6" y="22" width="52" height="2" fill="#fff" opacity="0.5"/>
+                </svg>
+                <span>Geheimnis</span>
+            </div>
         </div>
 
-        <div class="desktop-icon icon-trash">
-            <svg viewBox="0 0 64 64">
-                <path d="M16 20 h32 l-4 36 h-24 z" fill="#fff" stroke="#000" stroke-width="2"/>
-                <rect x="12" y="12" width="40" height="8" fill="#c0c0c0" stroke="#000" stroke-width="2"/>
-                <rect x="28" y="6" width="8" height="6" fill="#c0c0c0" stroke="#000" stroke-width="2"/>
-                <line x1="24" y1="24" x2="24" y2="52" stroke="#000" stroke-width="2"/>
-                <line x1="32" y1="24" x2="32" y2="52" stroke="#000" stroke-width="2"/>
-                <line x1="40" y1="24" x2="40" y2="52" stroke="#000" stroke-width="2"/>
-            </svg>
-            <span>Papierkorb</span>
-        </div>
-
-        <div class="desktop-icon icon-notepad">
-            <svg viewBox="0 0 64 64">
-                <rect x="16" y="8" width="32" height="48" fill="#fff" stroke="#000" stroke-width="2"/>
-                <line x1="22" y1="20" x2="42" y2="20" stroke="#000" stroke-width="2"/>
-                <line x1="22" y1="28" x2="42" y2="28" stroke="#000" stroke-width="2"/>
-                <line x1="22" y1="36" x2="38" y2="36" stroke="#000" stroke-width="2"/>
-            </svg>
-            <span>Readme.txt</span>
-        </div>
-
-        <!-- Retro Ordner (Interaktiv und zentriert) -->
-        <div class="desktop-icon interactive" onclick="openRetroWindow()">
-            <!-- Pixeliger Ordner SVG -->
-            <svg viewBox="0 0 64 64">
-                <rect x="6" y="12" width="26" height="10" fill="#fbc02d" stroke="#000" stroke-width="2"/>
-                <rect x="6" y="20" width="52" height="34" fill="#fff59d" stroke="#000" stroke-width="2"/>
-                <rect x="6" y="22" width="52" height="2" fill="#fff" opacity="0.5"/>
-            </svg>
-            <span>Geheimnis</span>
-        </div>
-
-        <!-- Retro Fenster -->
-        <div id="retro-window" class="win95-border">
+        <div id="quote-window" class="window win95-border">
             <div class="title-bar">
-                <span>Update.exe</span>
-                <button class="close-btn" onclick="closeRetroWindow()">X</button>
+                <span id="quote-title">Nachricht</span>
+                <button class="close-btn" onclick="closeWindow('quote-window')">X</button>
             </div>
             <div class="window-content">
-                <div class="message-text">
-                    Die Welt ändert sich bald.<br>
-                    Etwas Neues kommt auf uns zu.
+                <div class="win95-inset" style="padding: 15px; background: #fff; text-align: left;">
+                    <span id="quote-text">...</span>
                 </div>
-                <!-- Der Container für den Ladebalken -->
-                <div class="win95-border-inset">
+                <button class="win95-border" style="margin-top: 15px; padding: 4px 15px; font-family: inherit; font-weight: bold;" onclick="closeWindow('quote-window')">OK</button>
+            </div>
+        </div>
+
+        <div id="secret-window" class="window win95-border" style="width: 350px;">
+            <div class="title-bar">
+                <span>Update.exe</span>
+                <button class="close-btn" onclick="closeSecretWindow()">X</button>
+            </div>
+            <div class="window-content">
+                <div style="margin-bottom: 20px; line-height: 1.5;">
+                    Die Welt ändert sich bald.<br>
+                    Etwas neues kommt auch uns zu.
+                </div>
+                <div class="win95-inset">
                     <div class="progress-container" id="progress-container">
-                        <!-- Blöcke werden per JavaScript hinzugefügt -->
+                        <!-- Blöcke werden per JS hinzugefügt -->
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Taskleiste -->
+        <div id="snake-window" class="window win95-border" style="width: 320px;">
+            <div class="title-bar">
+                <span>Snake.exe</span>
+                <button class="close-btn" onclick="closeSnakeWindow()">X</button>
+            </div>
+            <div class="window-content">
+                <canvas id="snake-canvas" width="200" height="200"></canvas>
+                
+                <!-- On-Screen D-Pad für Touch/Mobile -->
+                <div class="d-pad">
+                    <button class="btn-up" onmousedown="setSnakeDir(0, -1)" ontouchstart="setSnakeDir(0, -1); event.preventDefault()">▲</button>
+                    <button class="btn-left" onmousedown="setSnakeDir(-1, 0)" ontouchstart="setSnakeDir(-1, 0); event.preventDefault()">◀</button>
+                    <button class="btn-down" onmousedown="setSnakeDir(0, 1)" ontouchstart="setSnakeDir(0, 1); event.preventDefault()">▼</button>
+                    <button class="btn-right" onmousedown="setSnakeDir(1, 0)" ontouchstart="setSnakeDir(1, 0); event.preventDefault()">▶</button>
+                </div>
+                <div style="margin-top: 10px; font-size: 12px;">Pfeiltasten oder Buttons nutzen!</div>
+            </div>
+        </div>
+
         <div class="taskbar">
-            <div class="win95-border start-btn">
+            <!-- Start-Button öffnet nun das Snake-Fenster! -->
+            <div class="win95-border start-btn" onclick="openSnakeWindow()">
                 <svg viewBox="0 0 20 20">
                     <rect x="0" y="0" width="8" height="8" fill="#f44336"/>
                     <rect x="10" y="0" width="8" height="8" fill="#4caf50"/>
@@ -367,82 +481,102 @@
                 </svg>
                 Start
             </div>
-            <div class="win95-border-inset taskbar-tray">
-                12:00 PM
+            <div class="win95-inset taskbar-tray">
+                <span id="clock-display">12:00 PM</span>
             </div>
         </div>
 
     </div>
 
     <script>
-        let progressInterval;
+        // --- System Variablen ---
         let isTimeTraveling = false;
+        let highestZIndex = 50;
 
-        // Funktion: Fordert Vollbildmodus an
-        function requestFullScreen() {
-            const elem = document.documentElement;
-            if (elem.requestFullscreen) {
-                elem.requestFullscreen();
-            } else if (elem.webkitRequestFullscreen) { /* Safari */
-                elem.webkitRequestFullscreen();
-            } else if (elem.msRequestFullscreen) { /* IE11 */
-                elem.msRequestFullscreen();
-            }
-        }
-
-        // Funktion: Umschalten von Modern auf Retro mit Vollbild
+        // --- Vollbild & Ansichtswechsel ---
         function triggerTimeTravel() {
             if(isTimeTraveling) return;
             isTimeTraveling = true;
 
-            // Vollbild anfordern (muss durch User-Interaktion wie diesen Klick passieren)
+            const elem = document.documentElement;
             try {
-                requestFullScreen();
-            } catch(e) {
-                console.log("Vollbild konnte nicht gestartet werden.", e);
-            }
+                if (elem.requestFullscreen) elem.requestFullscreen();
+                else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
+                else if (elem.msRequestFullscreen) elem.msRequestFullscreen();
+            } catch(e) { console.log("Vollbild Fehler", e); }
 
             const modernView = document.getElementById('modern-view');
             const retroView = document.getElementById('retro-view');
 
-            // Dramatischer Effekt beim Verschwinden
             modernView.style.transform = 'scale(2)';
             modernView.style.opacity = '0';
-            modernView.style.filter = 'blur(10px)';
 
-            // Warte kurz, dann zeige Retro-Ansicht
             setTimeout(() => {
                 modernView.style.display = 'none';
                 retroView.style.display = 'block';
-                updateClock(); // Startet die Uhr in der Taskleiste
-            }, 400); // 400ms stimmen mit der CSS transition überein
+                updateClock();
+            }, 500);
         }
 
-        // Funktion: Öffnet das Retro-Fenster und startet den Balken
-        function openRetroWindow() {
-            const win = document.getElementById('retro-window');
-            if (win.style.display === 'block') return; // Verhindert mehrfaches Klicken
-            
+        function updateClock() {
+            const clockEl = document.getElementById('clock-display');
+            setInterval(() => {
+                const now = new Date();
+                let h = now.getHours();
+                let m = now.getMinutes();
+                const ampm = h >= 12 ? 'PM' : 'AM';
+                h = h % 12 || 12;
+                m = m < 10 ? '0' + m : m;
+                clockEl.textContent = `${h}:${m} ${ampm}`;
+            }, 1000);
+        }
+
+        // --- Fenster Management ---
+        function bringToFront(id) {
+            highestZIndex++;
+            document.getElementById(id).style.zIndex = highestZIndex;
+        }
+
+        function closeWindow(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        // --- Zitate Popups ---
+        function openQuoteWindow(title, text) {
+            document.getElementById('quote-title').innerText = title;
+            document.getElementById('quote-text').innerText = text;
+            const win = document.getElementById('quote-window');
             win.style.display = 'block';
+            
+            // Leichter Offset damit sie nicht genau übereinander liegen
+            const offset = (highestZIndex % 5) * 10;
+            win.style.top = `calc(50% + ${offset}px)`;
+            win.style.left = `calc(50% + ${offset}px)`;
+            
+            bringToFront('quote-window');
+        }
+
+        // --- Geheimnis (Ladebalken) ---
+        let progressInterval;
+        function openSecretWindow() {
+            const win = document.getElementById('secret-window');
+            win.style.display = 'block';
+            bringToFront('secret-window');
             startProgressBar();
         }
 
-        // Funktion: Schließt das Retro-Fenster und bricht das Laden ab
-        function closeRetroWindow() {
-            document.getElementById('retro-window').style.display = 'none';
+        function closeSecretWindow() {
+            closeWindow('secret-window');
             clearInterval(progressInterval);
-            document.getElementById('progress-container').innerHTML = ''; // Balken leeren
         }
 
-        // Funktion: Simuliert den extrem langsamen Windows-Ladebalken
         function startProgressBar() {
             const container = document.getElementById('progress-container');
-            container.innerHTML = ''; // Zurücksetzen falls vorher abgebrochen
-            
+            container.innerHTML = ''; 
             let blocksAdded = 0;
-            const maxBlocks = 18; // Anzahl der blauen Blöcke die reinpassen
+            const maxBlocks = 18; 
             
-            // Sehr langsamer Intervall (alle 1.5 Sekunden ein Block)
+            clearInterval(progressInterval);
             progressInterval = setInterval(() => {
                 if (blocksAdded < maxBlocks) {
                     const block = document.createElement('div');
@@ -450,27 +584,112 @@
                     container.appendChild(block);
                     blocksAdded++;
                 } else {
-                    // Ladebalken ist voll
                     clearInterval(progressInterval);
                 }
-            }, 1500); 
+            }, 1500); // Extrem langsam: 1.5 Sekunden pro Block
         }
 
-        // Optional: Kleine Funktion um die Uhrzeit in der Taskleiste zu aktualisieren
-        function updateClock() {
-            const tray = document.querySelector('.taskbar-tray');
-            setInterval(() => {
-                const now = new Date();
-                let hours = now.getHours();
-                let minutes = now.getMinutes();
-                const ampm = hours >= 12 ? 'PM' : 'AM';
-                hours = hours % 12;
-                hours = hours ? hours : 12; // 0 Uhr als 12 anzeigen
-                minutes = minutes < 10 ? '0' + minutes : minutes;
-                tray.textContent = hours + ':' + minutes + ' ' + ampm;
-            }, 1000);
+        // --- STREAMING_CHUNK:Snake Game Logik ---
+        let snakeGameInterval;
+        let snake = [];
+        let food = {};
+        let dir = {x: 1, y: 0};
+        let nextDir = {x: 1, y: 0};
+        const gridSize = 10;
+        const canvasSize = 200;
+        const ctx = document.getElementById('snake-canvas').getContext('2d');
+
+        function openSnakeWindow() {
+            const win = document.getElementById('snake-window');
+            if(win.style.display === 'block') return; // Bereits offen
+            
+            win.style.display = 'block';
+            bringToFront('snake-window');
+            initSnake();
+        }
+
+        function closeSnakeWindow() {
+            closeWindow('snake-window');
+            clearInterval(snakeGameInterval);
+        }
+
+        function initSnake() {
+            snake = [{x: 10, y: 10}, {x: 9, y: 10}, {x: 8, y: 10}];
+            dir = {x: 1, y: 0};
+            nextDir = {x: 1, y: 0};
+            spawnFood();
+            clearInterval(snakeGameInterval);
+            snakeGameInterval = setInterval(gameLoop, 150);
+        }
+
+        function spawnFood() {
+            food = {
+                x: Math.floor(Math.random() * (canvasSize / gridSize)),
+                y: Math.floor(Math.random() * (canvasSize / gridSize))
+            };
+        }
+
+        function setSnakeDir(x, y) {
+            // Verhindern, dass Snake direkt in sich selbst umkehrt
+            if(x !== 0 && dir.x === -x) return;
+            if(y !== 0 && dir.y === -y) return;
+            nextDir = {x, y};
+        }
+
+        // Keyboard Steuerung
+        window.addEventListener('keydown', e => {
+            if(document.getElementById('snake-window').style.display !== 'block') return;
+            
+            switch(e.key) {
+                case 'ArrowUp': setSnakeDir(0, -1); break;
+                case 'ArrowDown': setSnakeDir(0, 1); break;
+                case 'ArrowLeft': setSnakeDir(-1, 0); break;
+                case 'ArrowRight': setSnakeDir(1, 0); break;
+            }
+        });
+
+        function gameLoop() {
+            dir = nextDir;
+            const head = {x: snake[0].x + dir.x, y: snake[0].y + dir.y};
+
+            // Wand-Kollision
+            if (head.x < 0 || head.x >= canvasSize/gridSize || head.y < 0 || head.y >= canvasSize/gridSize) {
+                initSnake(); return;
+            }
+            // Selbst-Kollision
+            for (let i = 0; i < snake.length; i++) {
+                if (head.x === snake[i].x && head.y === snake[i].y) {
+                    initSnake(); return;
+                }
+            }
+
+            snake.unshift(head);
+
+            // Essen getroffen?
+            if (head.x === food.x && head.y === food.y) {
+                spawnFood();
+            } else {
+                snake.pop();
+            }
+
+            drawSnake();
+        }
+
+        function drawSnake() {
+            // Hintergrund
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, canvasSize, canvasSize);
+
+            // Essen
+            ctx.fillStyle = '#f00';
+            ctx.fillRect(food.x * gridSize, food.y * gridSize, gridSize - 1, gridSize - 1);
+
+            // Snake
+            ctx.fillStyle = '#0f0';
+            snake.forEach(part => {
+                ctx.fillRect(part.x * gridSize, part.y * gridSize, gridSize - 1, gridSize - 1);
+            });
         }
     </script>
-
 </body>
 </html>
