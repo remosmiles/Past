@@ -54,6 +54,7 @@
             letter-spacing: 0.2rem;
             margin-bottom: 3rem;
             opacity: 0.9;
+            text-align: center;
         }
 
         .btn-modern {
@@ -97,16 +98,13 @@
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="28" shape-rendering="crispEdges"><path fill="black" d="M0,0 l14,14 h-6 l3.5,7 l-2.5,1 l-3.5,-7 l-3.5,3.5 Z"/><path fill="white" d="M1,2 l10,10 h-4.5 l3.5,7 l-0.5,0.5 l-3.5,-7 l-3,3 Z"/></svg>'), auto;
         }
 
-        /* Zwingt den Cursor auf alle Elemente im Retro-Modus */
         #retro-view * {
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="28" shape-rendering="crispEdges"><path fill="black" d="M0,0 l14,14 h-6 l3.5,7 l-2.5,1 l-3.5,-7 l-3.5,3.5 Z"/><path fill="white" d="M1,2 l10,10 h-4.5 l3.5,7 l-0.5,0.5 l-3.5,-7 l-3,3 Z"/></svg>'), auto !important;
         }
 
         .desktop-icon {
             position: absolute;
-            top: 30px;
-            left: 30px;
-            width: 70px;
+            width: 76px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -114,24 +112,37 @@
         }
 
         .desktop-icon svg {
-            width: 48px;
-            height: 48px;
+            width: 42px;
+            height: 42px;
             margin-bottom: 5px;
             shape-rendering: crispEdges;
         }
 
         .desktop-icon span {
             color: white;
-            font-size: 14px;
+            font-size: 13px;
             padding: 2px 4px;
             text-shadow: 1px 1px 0 #000;
         }
 
-        .desktop-icon:active span {
+        .desktop-icon:active span, .desktop-icon.interactive:active span {
             background-color: #000080;
             border: 1px dotted white;
             text-shadow: none;
         }
+
+        .interactive {
+            /* Zentrierte Position für den geheimen Ordner */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Feste Positionen für Hintergrund-Icons */
+        .icon-computer { top: 20px; left: 20px; }
+        .icon-trash { top: 110px; left: 20px; }
+        .icon-notepad { top: 200px; left: 20px; }
+        .icon-internet { top: 20px; left: 110px; }
 
         .win95-border {
             background-color: var(--win-gray);
@@ -159,6 +170,7 @@
             transform: translate(-50%, -50%);
             width: 400px;
             padding: 2px;
+            z-index: 20;
         }
 
         .title-bar {
@@ -228,6 +240,47 @@
             height: 100%;
             background-color: var(--win-blue);
         }
+
+        .taskbar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 32px;
+            background-color: var(--win-gray);
+            border-top: 2px solid #ffffff;
+            display: flex;
+            align-items: center;
+            padding: 2px;
+            box-sizing: border-box;
+            z-index: 30;
+        }
+
+        .start-btn {
+            height: 100%;
+            padding: 0 8px;
+            display: flex;
+            align-items: center;
+            font-weight: bold;
+            font-size: 14px;
+            gap: 4px;
+            color: black;
+        }
+
+        .start-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+        
+        .taskbar-tray {
+            margin-left: auto;
+            height: 100%;
+            padding: 0 8px;
+            display: flex;
+            align-items: center;
+            font-size: 12px;
+            color: black;
+        }
     </style>
 </head>
 <body>
@@ -239,12 +292,45 @@
 
     <div id="retro-view">
         
-        <!-- Retro Ordner -->
-        <div class="desktop-icon" onclick="openRetroWindow()">
+        <!-- Hintergrund-Icons (Nicht interaktiv) -->
+        <div class="desktop-icon icon-computer">
+            <svg viewBox="0 0 64 64">
+                <rect x="12" y="12" width="40" height="28" fill="#fff" stroke="#000" stroke-width="2"/>
+                <rect x="16" y="16" width="32" height="20" fill="#008080" />
+                <rect x="24" y="40" width="16" height="8" fill="#c0c0c0" stroke="#000" stroke-width="2"/>
+                <rect x="12" y="48" width="40" height="8" fill="#c0c0c0" stroke="#000" stroke-width="2"/>
+            </svg>
+            <span>Arbeitsplatz</span>
+        </div>
+
+        <div class="desktop-icon icon-trash">
+            <svg viewBox="0 0 64 64">
+                <path d="M16 20 h32 l-4 36 h-24 z" fill="#fff" stroke="#000" stroke-width="2"/>
+                <rect x="12" y="12" width="40" height="8" fill="#c0c0c0" stroke="#000" stroke-width="2"/>
+                <rect x="28" y="6" width="8" height="6" fill="#c0c0c0" stroke="#000" stroke-width="2"/>
+                <line x1="24" y1="24" x2="24" y2="52" stroke="#000" stroke-width="2"/>
+                <line x1="32" y1="24" x2="32" y2="52" stroke="#000" stroke-width="2"/>
+                <line x1="40" y1="24" x2="40" y2="52" stroke="#000" stroke-width="2"/>
+            </svg>
+            <span>Papierkorb</span>
+        </div>
+
+        <div class="desktop-icon icon-notepad">
+            <svg viewBox="0 0 64 64">
+                <rect x="16" y="8" width="32" height="48" fill="#fff" stroke="#000" stroke-width="2"/>
+                <line x1="22" y1="20" x2="42" y2="20" stroke="#000" stroke-width="2"/>
+                <line x1="22" y1="28" x2="42" y2="28" stroke="#000" stroke-width="2"/>
+                <line x1="22" y1="36" x2="38" y2="36" stroke="#000" stroke-width="2"/>
+            </svg>
+            <span>Readme.txt</span>
+        </div>
+
+        <!-- Retro Ordner (Interaktiv und zentriert) -->
+        <div class="desktop-icon interactive" onclick="openRetroWindow()">
             <!-- Pixeliger Ordner SVG -->
             <svg viewBox="0 0 64 64">
-                <rect x="6" y="12" width="26" height="10" fill="#fbc02d" />
-                <rect x="6" y="20" width="52" height="34" fill="#fff59d" stroke="#fbc02d" stroke-width="2"/>
+                <rect x="6" y="12" width="26" height="10" fill="#fbc02d" stroke="#000" stroke-width="2"/>
+                <rect x="6" y="20" width="52" height="34" fill="#fff59d" stroke="#000" stroke-width="2"/>
                 <rect x="6" y="22" width="52" height="2" fill="#fff" opacity="0.5"/>
             </svg>
             <span>Geheimnis</span>
@@ -270,16 +356,51 @@
             </div>
         </div>
 
+        <!-- Taskleiste -->
+        <div class="taskbar">
+            <div class="win95-border start-btn">
+                <svg viewBox="0 0 20 20">
+                    <rect x="0" y="0" width="8" height="8" fill="#f44336"/>
+                    <rect x="10" y="0" width="8" height="8" fill="#4caf50"/>
+                    <rect x="0" y="10" width="8" height="8" fill="#2196f3"/>
+                    <rect x="10" y="10" width="8" height="8" fill="#ffeb3b"/>
+                </svg>
+                Start
+            </div>
+            <div class="win95-border-inset taskbar-tray">
+                12:00 PM
+            </div>
+        </div>
+
     </div>
 
     <script>
         let progressInterval;
         let isTimeTraveling = false;
 
-        // Funktion: Umschalten von Modern auf Retro
+        // Funktion: Fordert Vollbildmodus an
+        function requestFullScreen() {
+            const elem = document.documentElement;
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.webkitRequestFullscreen) { /* Safari */
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) { /* IE11 */
+                elem.msRequestFullscreen();
+            }
+        }
+
+        // Funktion: Umschalten von Modern auf Retro mit Vollbild
         function triggerTimeTravel() {
             if(isTimeTraveling) return;
             isTimeTraveling = true;
+
+            // Vollbild anfordern (muss durch User-Interaktion wie diesen Klick passieren)
+            try {
+                requestFullScreen();
+            } catch(e) {
+                console.log("Vollbild konnte nicht gestartet werden.", e);
+            }
 
             const modernView = document.getElementById('modern-view');
             const retroView = document.getElementById('retro-view');
@@ -293,6 +414,7 @@
             setTimeout(() => {
                 modernView.style.display = 'none';
                 retroView.style.display = 'block';
+                updateClock(); // Startet die Uhr in der Taskleiste
             }, 400); // 400ms stimmen mit der CSS transition überein
         }
 
@@ -332,6 +454,21 @@
                     clearInterval(progressInterval);
                 }
             }, 1500); 
+        }
+
+        // Optional: Kleine Funktion um die Uhrzeit in der Taskleiste zu aktualisieren
+        function updateClock() {
+            const tray = document.querySelector('.taskbar-tray');
+            setInterval(() => {
+                const now = new Date();
+                let hours = now.getHours();
+                let minutes = now.getMinutes();
+                const ampm = hours >= 12 ? 'PM' : 'AM';
+                hours = hours % 12;
+                hours = hours ? hours : 12; // 0 Uhr als 12 anzeigen
+                minutes = minutes < 10 ? '0' + minutes : minutes;
+                tray.textContent = hours + ':' + minutes + ' ' + ampm;
+            }, 1000);
         }
     </script>
 
