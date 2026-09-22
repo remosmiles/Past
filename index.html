@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zeitreise</title>
+    
+    <!-- Lade moderne und retro Schriftarten -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&family=Pixelify+Sans:wght@400;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --modern-bg: #0f172a;
+            --modern-text: #f8fafc;
+            --retro-bg: #008080; /* Klassisches Windows Türkis */
+            --win-gray: #c0c0c0;
+            --win-blue: #000080;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        /* =========================================
+           MODERNER MODUS (Startzustand)
+           ========================================= */
+        #modern-view {
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle at center, #1e293b 0%, var(--modern-bg) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Inter', sans-serif;
+            color: var(--modern-text);
+            transition: opacity 0.2s ease-out, transform 0.3s ease-in;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 10;
+        }
+
+        .title-modern {
+            font-size: 3rem;
+            font-weight: 300;
+            letter-spacing: 0.2rem;
+            margin-bottom: 3rem;
+            opacity: 0.9;
+        }
+
+        .btn-modern {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
+            border: none;
+            padding: 18px 48px;
+            font-size: 1.2rem;
+            font-weight: 500;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.4);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-modern:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(139, 92, 246, 0.6);
+        }
+
+        .btn-modern:active {
+            transform: translateY(1px);
+        }
+
+        /* =========================================
+           RETRO MODUS (Windows 95/98)
+           ========================================= */
+        #retro-view {
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            background-color: var(--retro-bg);
+            font-family: 'Pixelify Sans', 'MS Sans Serif', Tahoma, sans-serif;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 5;
+            /* Eigener verpixelter Cursor via SVG */
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="28" shape-rendering="crispEdges"><path fill="black" d="M0,0 l14,14 h-6 l3.5,7 l-2.5,1 l-3.5,-7 l-3.5,3.5 Z"/><path fill="white" d="M1,2 l10,10 h-4.5 l3.5,7 l-0.5,0.5 l-3.5,-7 l-3,3 Z"/></svg>'), auto;
+        }
+
+        /* Zwingt den Cursor auf alle Elemente im Retro-Modus */
+        #retro-view * {
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="28" shape-rendering="crispEdges"><path fill="black" d="M0,0 l14,14 h-6 l3.5,7 l-2.5,1 l-3.5,-7 l-3.5,3.5 Z"/><path fill="white" d="M1,2 l10,10 h-4.5 l3.5,7 l-0.5,0.5 l-3.5,-7 l-3,3 Z"/></svg>'), auto !important;
+        }
+
+        .desktop-icon {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            width: 70px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .desktop-icon svg {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 5px;
+            shape-rendering: crispEdges;
+        }
+
+        .desktop-icon span {
+            color: white;
+            font-size: 14px;
+            padding: 2px 4px;
+            text-shadow: 1px 1px 0 #000;
+        }
+
+        .desktop-icon:active span {
+            background-color: #000080;
+            border: 1px dotted white;
+            text-shadow: none;
+        }
+
+        .win95-border {
+            background-color: var(--win-gray);
+            border-top: 2px solid #ffffff;
+            border-left: 2px solid #ffffff;
+            border-right: 2px solid #000000;
+            border-bottom: 2px solid #000000;
+            box-shadow: inset 1px 1px 0px #dfdfdf, inset -1px -1px 0px #808080;
+        }
+
+        .win95-border-inset {
+            background-color: #ffffff;
+            border-top: 2px solid #808080;
+            border-left: 2px solid #808080;
+            border-right: 2px solid #ffffff;
+            border-bottom: 2px solid #ffffff;
+            box-shadow: inset 1px 1px 0px #000000, inset -1px -1px 0px #dfdfdf;
+        }
+
+        #retro-window {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            padding: 2px;
+        }
+
+        .title-bar {
+            background-color: var(--win-blue);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2px 3px 2px 5px;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .close-btn {
+            background-color: var(--win-gray);
+            border-top: 2px solid #ffffff;
+            border-left: 2px solid #ffffff;
+            border-right: 2px solid #000000;
+            border-bottom: 2px solid #000000;
+            font-family: inherit;
+            font-weight: bold;
+            font-size: 12px;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0;
+            box-shadow: inset 1px 1px 0px #dfdfdf, inset -1px -1px 0px #808080;
+        }
+
+        .close-btn:active {
+            border-top: 2px solid #000000;
+            border-left: 2px solid #000000;
+            border-right: 2px solid #ffffff;
+            border-bottom: 2px solid #ffffff;
+            box-shadow: inset 1px 1px 0px #808080, inset -1px -1px 0px #dfdfdf;
+            padding-top: 2px;
+            padding-left: 2px;
+        }
+
+        .window-content {
+            padding: 20px;
+            color: #000;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .message-text {
+            margin-bottom: 25px;
+            line-height: 1.4;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 24px;
+            padding: 2px;
+            display: flex;
+            gap: 2px;
+            box-sizing: border-box;
+            background-color: var(--win-gray);
+        }
+
+        .progress-block {
+            width: 16px;
+            height: 100%;
+            background-color: var(--win-blue);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="modern-view">
+        <h1 class="title-modern">Bereit für den Wandel?</h1>
+        <button class="btn-modern" onclick="triggerTimeTravel()">Zeitreise beginnen</button>
+    </div>
+
+    <div id="retro-view">
+        
+        <!-- Retro Ordner -->
+        <div class="desktop-icon" onclick="openRetroWindow()">
+            <!-- Pixeliger Ordner SVG -->
+            <svg viewBox="0 0 64 64">
+                <rect x="6" y="12" width="26" height="10" fill="#fbc02d" />
+                <rect x="6" y="20" width="52" height="34" fill="#fff59d" stroke="#fbc02d" stroke-width="2"/>
+                <rect x="6" y="22" width="52" height="2" fill="#fff" opacity="0.5"/>
+            </svg>
+            <span>Geheimnis</span>
+        </div>
+
+        <!-- Retro Fenster -->
+        <div id="retro-window" class="win95-border">
+            <div class="title-bar">
+                <span>Update.exe</span>
+                <button class="close-btn" onclick="closeRetroWindow()">X</button>
+            </div>
+            <div class="window-content">
+                <div class="message-text">
+                    Die Welt ändert sich bald.<br>
+                    Etwas Neues kommt auf uns zu.
+                </div>
+                <!-- Der Container für den Ladebalken -->
+                <div class="win95-border-inset">
+                    <div class="progress-container" id="progress-container">
+                        <!-- Blöcke werden per JavaScript hinzugefügt -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let progressInterval;
+        let isTimeTraveling = false;
+
+        // Funktion: Umschalten von Modern auf Retro
+        function triggerTimeTravel() {
+            if(isTimeTraveling) return;
+            isTimeTraveling = true;
+
+            const modernView = document.getElementById('modern-view');
+            const retroView = document.getElementById('retro-view');
+
+            // Dramatischer Effekt beim Verschwinden
+            modernView.style.transform = 'scale(2)';
+            modernView.style.opacity = '0';
+            modernView.style.filter = 'blur(10px)';
+
+            // Warte kurz, dann zeige Retro-Ansicht
+            setTimeout(() => {
+                modernView.style.display = 'none';
+                retroView.style.display = 'block';
+            }, 400); // 400ms stimmen mit der CSS transition überein
+        }
+
+        // Funktion: Öffnet das Retro-Fenster und startet den Balken
+        function openRetroWindow() {
+            const win = document.getElementById('retro-window');
+            if (win.style.display === 'block') return; // Verhindert mehrfaches Klicken
+            
+            win.style.display = 'block';
+            startProgressBar();
+        }
+
+        // Funktion: Schließt das Retro-Fenster und bricht das Laden ab
+        function closeRetroWindow() {
+            document.getElementById('retro-window').style.display = 'none';
+            clearInterval(progressInterval);
+            document.getElementById('progress-container').innerHTML = ''; // Balken leeren
+        }
+
+        // Funktion: Simuliert den extrem langsamen Windows-Ladebalken
+        function startProgressBar() {
+            const container = document.getElementById('progress-container');
+            container.innerHTML = ''; // Zurücksetzen falls vorher abgebrochen
+            
+            let blocksAdded = 0;
+            const maxBlocks = 18; // Anzahl der blauen Blöcke die reinpassen
+            
+            // Sehr langsamer Intervall (alle 1.5 Sekunden ein Block)
+            progressInterval = setInterval(() => {
+                if (blocksAdded < maxBlocks) {
+                    const block = document.createElement('div');
+                    block.className = 'progress-block';
+                    container.appendChild(block);
+                    blocksAdded++;
+                } else {
+                    // Ladebalken ist voll
+                    clearInterval(progressInterval);
+                }
+            }, 1500); 
+        }
+    </script>
+
+</body>
+</html>
