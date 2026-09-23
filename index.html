@@ -10,9 +10,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&family=Press+Start+2P&family=Pixelify+Sans:wght@400;600&display=swap" rel="stylesheet">
 
-    <!-- Confetti Library -->
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-
     <style>
         :root {
             --modern-bg: #0f172a;
@@ -194,13 +191,6 @@
         .icon-pos-8 { top: 250px; left: 100px; } /* Pinball */
         .icon-pos-9 { top: 10px; right: 20px; left: auto; } /* Verhör */
         
-        .interactive-center {
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 100px;
-        }
-        .interactive-center svg { width: 50px; height: 50px; }
-
         .win95-border {
             background-color: var(--win-gray);
             border-top: 2px solid var(--win-light);
@@ -273,16 +263,6 @@
             font-size: 16px;
             text-align: center;
             background: var(--win-gray);
-        }
-
-        /* Ladebalken */
-        .progress-container {
-            width: 100%; height: 24px; padding: 2px;
-            display: flex; gap: 2px; box-sizing: border-box;
-            background-color: var(--win-gray); margin-top: 20px;
-        }
-        .progress-block {
-            width: 16px; height: 100%; background-color: var(--win-blue);
         }
 
         canvas {
@@ -427,12 +407,6 @@
                 <span>Verhör.exe</span>
             </div>
 
-            <!-- Icon: Geheimnis (Zentriert) -->
-            <div class="desktop-icon interactive-center" onclick="openSecretWindow()">
-                <svg viewBox="0 0 64 64"><rect x="6" y="12" width="26" height="10" fill="#fbc02d" stroke="#000" stroke-width="2"/><rect x="6" y="20" width="52" height="34" fill="#fff59d" stroke="#000" stroke-width="2"/><rect x="6" y="22" width="52" height="2" fill="#fff" opacity="0.5"/></svg>
-                <span>Geheimnis</span>
-            </div>
-            
             <!-- Die restlichen dynamischen Icons werden per JS hinzugefügt -->
         </div>
 
@@ -447,23 +421,6 @@
                     <span id="quote-text">...</span>
                 </div>
                 <button class="win95-border" style="margin-top: 15px; padding: 4px 15px; font-family: inherit; font-weight: bold;" onclick="closeWindow('quote-window')">OK</button>
-            </div>
-        </div>
-
-        <!-- Geheimnis Fenster -->
-        <div id="secret-window" class="window win95-border drag-window" style="width: 350px;">
-            <div class="title-bar drag-handle">
-                <span>Update.exe</span>
-                <button class="close-btn" onclick="closeSecretWindow()">X</button>
-            </div>
-            <div class="window-content">
-                <div style="margin-bottom: 20px; line-height: 1.5; font-family: 'Press Start 2P', sans-serif; font-size: 10px; color: #ff0000;">
-                    Die Welt ändert sich bald.<br><br>
-                    Etwas neues kommt auf uns zu.
-                </div>
-                <div class="win95-inset">
-                    <div class="progress-container" id="progress-container"></div>
-                </div>
             </div>
         </div>
 
@@ -628,18 +585,14 @@
                     left = Math.random() * (window.innerWidth - 100);
                     top = Math.random() * (window.innerHeight - 100);
                     
-                    // Kollisionen grob verhindern: 
-                    // Mitte (Geheimnis-Ordner)
-                    let inCenter = (left > window.innerWidth/2 - 100 && left < window.innerWidth/2 + 50) && 
-                                   (top > window.innerHeight/2 - 100 && top < window.innerHeight/2 + 50);
-                    
+                    // Kollisionen grob verhindern:
                     // Linke Seite (Statische Icons Spalte 1 & 2)
                     let inTopLeft = (left < 200 && top < 350);
                     
                     // Oben Rechts (Verhör)
                     let inTopRight = (left > window.innerWidth - 150 && top < 100);
                     
-                    if(!inCenter && !inTopLeft && !inTopRight) {
+                    if(!inTopLeft && !inTopRight) {
                         valid = true;
                     }
                     attempts++;
@@ -668,14 +621,23 @@
             if(isCrashing) return; // Wenn er schon abstürzt, ignoriere Klicks
 
             const rand = Math.random();
-            // 80% Chance auf Konfetti
+            // 80% Chance auf Google-Suche
             if(rand < 0.8) {
-                confetti({
-                    particleCount: 100,
-                    spread: 70,
-                    origin: { y: 0.6 },
-                    zIndex: 10000 // Wichtig, um über dem CRT-Overlay zu sein
-                });
+                const queries = [
+                    'warum leuchtet mein toastbrot',
+                    'haben pinguine knie',
+                    'wie fange ich einen entflohenen reisebus bei der carkontrolle',
+                    'kettlebell halos während der arbeitszeit erlaubt',
+                    'taser 10 anleitung für anfänger',
+                    'bambus news echte nachrichten',
+                    'wie werde ich ein lächelnder fux auf tiktok',
+                    'was passiert wenn man im schwerverkehrszentrum erstfeld den falschen knopf drückt',
+                    'grappling techniken gegen unkooperative drucker',
+                    'warum ist der chef vom svz so streng',
+                    'wie besiege ich meinen chef im bjj'
+                ];
+                const q = queries[Math.floor(Math.random() * queries.length)];
+                window.location.href = "https://www.google.com/search?q=" + encodeURIComponent(q);
             } else {
                 // 20% Chance auf System Crash
                 triggerSystemCrash();
@@ -772,37 +734,6 @@
             win.style.top = `calc(30% + ${offset}px)`;
             win.style.left = `calc(30% + ${offset}px)`;
             bringToFront('quote-window');
-        }
-
-        let progressInterval;
-        function openSecretWindow() {
-            const win = document.getElementById('secret-window');
-            win.style.display = 'block';
-            win.style.top = '50%'; win.style.left = '50%'; win.style.transform = 'translate(-50%, -50%)';
-            bringToFront('secret-window');
-            startProgressBar();
-        }
-
-        function closeSecretWindow() {
-            closeWindow('secret-window');
-            clearInterval(progressInterval);
-        }
-
-        function startProgressBar() {
-            const container = document.getElementById('progress-container');
-            container.innerHTML = ''; 
-            let blocksAdded = 0; const maxBlocks = 18; 
-            clearInterval(progressInterval);
-            progressInterval = setInterval(() => {
-                if (blocksAdded < maxBlocks) {
-                    const block = document.createElement('div');
-                    block.className = 'progress-block';
-                    container.appendChild(block);
-                    blocksAdded++;
-                } else {
-                    clearInterval(progressInterval);
-                }
-            }, 2000); // Sehr langsam
         }
 
         let snakeGameInterval;
