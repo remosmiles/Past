@@ -171,6 +171,7 @@
         .icon-pos-6 { top: 90px; left: 100px; }
         .icon-pos-7 { top: 170px; left: 100px; } /* Security */
         .icon-pos-8 { top: 250px; left: 100px; } /* Pinball */
+        .icon-pos-9 { top: 10px; right: 20px; left: auto; } /* Verhör */
         
         .interactive-center {
             top: 50%; left: 50%;
@@ -380,12 +381,23 @@
                     <circle cx="32" cy="24" r="6" fill="#c0c0c0"/>
                     <line x1="20" y1="44" x2="30" y2="48" stroke="#ffeb3b" stroke-width="3"/>
                     <line x1="44" y1="44" x2="34" y2="48" stroke="#ffeb3b" stroke-width="3"/>
-                </svg>
-                <span>Pinball.exe</span>
-            </div>
+            </svg>
+            <span>Pinball.exe</span>
+        </div>
 
-            <!-- Icon: Geheimnis (Zentriert) -->
-            <div class="desktop-icon interactive-center" onclick="openSecretWindow()">
+        <!-- NEU Icon: Verhör.exe -->
+        <div class="desktop-icon icon-pos-9" onclick="openApp('verhoer-window', initVerhoer)">
+            <svg viewBox="0 0 64 64">
+                <rect x="8" y="12" width="48" height="32" fill="#fff" stroke="#000" stroke-width="2"/>
+                <polygon points="16,44 26,44 16,56" fill="#fff" stroke="#000" stroke-width="2"/>
+                <line x1="18" y1="44" x2="24" y2="44" stroke="#fff" stroke-width="4"/>
+                <text x="32" y="36" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#000080" text-anchor="middle">?</text>
+            </svg>
+            <span>Verhör.exe</span>
+        </div>
+
+        <!-- Icon: Geheimnis (Zentriert) -->
+        <div class="desktop-icon interactive-center" onclick="openSecretWindow()">
                 <svg viewBox="0 0 64 64"><rect x="6" y="12" width="26" height="10" fill="#fbc02d" stroke="#000" stroke-width="2"/><rect x="6" y="20" width="52" height="34" fill="#fff59d" stroke="#000" stroke-width="2"/><rect x="6" y="22" width="52" height="2" fill="#fff" opacity="0.5"/></svg>
                 <span>Geheimnis</span>
             </div>
@@ -458,13 +470,29 @@
                 <button class="close-btn" onclick="closeApp('pinball-window', pinballAnimFrame)">X</button>
             </div>
             <div class="window-content">
-                <canvas id="pinball-canvas" width="220" height="300"></canvas>
-                <div class="arcade-font" style="margin-top: 10px; font-size: 8px;">Klick auf das Fenster zum Flippern!</div>
+            <canvas id="pinball-canvas" width="220" height="300"></canvas>
+            <div class="arcade-font" style="margin-top: 10px; font-size: 8px;">Klick auf das Fenster zum Flippern!</div>
+        </div>
+    </div>
+
+    <!-- Verhör Fenster -->
+    <div id="verhoer-window" class="window win95-border drag-window" style="width: 320px;">
+        <div class="title-bar drag-handle">
+            <span>Verhör.exe</span>
+            <button class="close-btn" onclick="closeApp('verhoer-window')">X</button>
+        </div>
+        <div class="window-content" style="display: flex; flex-direction: column; gap: 10px;">
+            <div id="verhoer-chat" class="win95-inset" style="height: 180px; background: #fff; overflow-y: auto; text-align: left; padding: 8px; font-size: 14px;">
+            </div>
+            <div style="display: flex; gap: 5px;">
+                <input type="text" id="verhoer-input" class="win95-inset" style="flex-grow: 1; padding: 4px; font-family: inherit; font-size: 14px;" onkeydown="if(event.key === 'Enter') sendVerhoer()">
+                <button class="win95-border" style="font-weight: bold; cursor: pointer; padding: 0 10px; font-family: inherit; font-size: 14px;" onclick="sendVerhoer()">Senden</button>
             </div>
         </div>
+    </div>
 
-        <!-- Taskleiste -->
-        <div class="taskbar">
+    <!-- Taskleiste -->
+    <div class="taskbar">
             <div class="win95-border start-btn" onclick="openApp('snake-window', initSnake)">
                 <svg viewBox="0 0 20 20" width="16" height="16">
                     <rect x="0" y="0" width="8" height="8" fill="#f44336"/><rect x="10" y="0" width="8" height="8" fill="#4caf50"/><rect x="0" y="10" width="8" height="8" fill="#2196f3"/><rect x="10" y="10" width="8" height="8" fill="#ffeb3b"/>
@@ -766,12 +794,42 @@
             pbCtx.strokeRect(paddle.x, paddle.y, paddle.w, paddle.h);
 
             // Zeichne Ball
-            pbCtx.fillStyle = '#ffeb3b';
-            pbCtx.fillRect(ball.x, ball.y, ball.size, ball.size);
+        pbCtx.fillStyle = '#ffeb3b';
+        pbCtx.fillRect(ball.x, ball.y, ball.size, ball.size);
 
-            pinballAnimFrame = requestAnimationFrame(pinballLoop);
+        pinballAnimFrame = requestAnimationFrame(pinballLoop);
+    }
+
+    let verhoerStarted = false;
+    
+    function initVerhoer() {
+        const chat = document.getElementById('verhoer-chat');
+        if (!verhoerStarted) {
+            chat.innerHTML = '<div style="color: #000080; margin-bottom: 8px;"><b>System:</b> Was ist dein nächstes Ziel?</div>';
+            verhoerStarted = true;
         }
+        setTimeout(() => document.getElementById('verhoer-input').focus(), 100);
+    }
 
-    </script>
+    function sendVerhoer() {
+        const input = document.getElementById('verhoer-input');
+        const text = input.value.trim();
+        if (!text) return;
+
+        const chat = document.getElementById('verhoer-chat');
+        
+        // Nutzereingabe ins Chatfenster schreiben
+        chat.innerHTML += `<div style="color: #000; margin-bottom: 8px;"><b>Du:</b> ${text}</div>`;
+        input.value = '';
+        chat.scrollTop = chat.scrollHeight;
+
+        // Programm antwortet immer und ewig mit der gleichen Frage
+        setTimeout(() => {
+            chat.innerHTML += `<div style="color: #000080; margin-bottom: 8px;"><b>System:</b> Und dann?</div>`;
+            chat.scrollTop = chat.scrollHeight;
+        }, 600); // 600ms Verzögerung, als ob das System kurz "nachdenkt"
+    }
+
+</script>
 </body>
 </html>
