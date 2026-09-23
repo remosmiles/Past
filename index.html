@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Zeitreise OS</title>
     
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&family=Press+Start+2P&family=Pixelify+Sans:wght@400;600&display=swap" rel="stylesheet">
@@ -83,11 +82,9 @@
             font-family: 'Pixelify Sans', 'MS Sans Serif', Tahoma, sans-serif;
             position: absolute;
             top: 0; left: 0; z-index: 1;
-            /* Pixeliger Cursor */
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="28" shape-rendering="crispEdges"><path fill="black" d="M0,0 l14,14 h-6 l3.5,7 l-2.5,1 l-3.5,-7 l-3.5,3.5 Z"/><path fill="white" d="M1,2 l10,10 h-4.5 l3.5,7 l-0.5,0.5 l-3.5,-7 l-3,3 Z"/></svg>'), auto;
         }
 
-        /* Pixel-Art überall erzwingen */
         #retro-view, #retro-view * {
             image-rendering: pixelated !important;
             cursor: inherit;
@@ -180,16 +177,15 @@
             text-shadow: none; padding: 1px 3px;
         }
 
-        /* Feste Positionen der statischen Icons */
         .icon-pos-1 { top: 10px; left: 10px; }
         .icon-pos-2 { top: 90px; left: 10px; }
         .icon-pos-3 { top: 170px; left: 10px; }
         .icon-pos-4 { top: 250px; left: 10px; }
         .icon-pos-5 { top: 10px; left: 100px; }
         .icon-pos-6 { top: 90px; left: 100px; }
-        .icon-pos-7 { top: 170px; left: 100px; } /* Security */
-        .icon-pos-8 { top: 250px; left: 100px; } /* Pinball */
-        .icon-pos-9 { top: 10px; right: 20px; left: auto; } /* Verhör */
+        .icon-pos-7 { top: 170px; left: 100px; }
+        .icon-pos-8 { top: 250px; left: 100px; }
+        .icon-pos-9 { top: 10px; right: 20px; left: auto; }
         
         .win95-border {
             background-color: var(--win-gray);
@@ -217,7 +213,7 @@
             z-index: 20;
             min-width: 250px;
             max-width: 90vw;
-            box-shadow: 4px 4px 0px rgba(0,0,0,0.5); /* Retro harter Schatten */
+            box-shadow: 4px 4px 0px rgba(0,0,0,0.5);
         }
 
         .title-bar {
@@ -230,7 +226,7 @@
             font-size: 14px;
             font-weight: 600;
             letter-spacing: 1px;
-            cursor: grab; /* Draggable Indikator */
+            cursor: grab;
         }
         .title-bar:active { cursor: grabbing; }
 
@@ -278,7 +274,6 @@
             text-shadow: 1px 1px 0 #000;
         }
 
-        /* D-Pad für Mobile Snake */
         .d-pad {
             display: grid; grid-template-columns: 40px 40px 40px; grid-template-rows: 40px 40px;
             gap: 5px; justify-content: center; margin-top: 15px;
@@ -338,43 +333,36 @@
         <div class="crt-vignette"></div>
         
         <div class="desktop-icons-container" id="desktop-icons">
-            <!-- Icon: Arbeitsplatz -->
             <div class="desktop-icon icon-pos-1" onclick="openQuoteWindow('Arbeitsplatz', 'Verberge deine Absichten.')">
                 <svg viewBox="0 0 64 64"><rect x="12" y="12" width="40" height="28" fill="#fff" stroke="#000" stroke-width="2"/><rect x="16" y="16" width="32" height="20" fill="#008080" /><rect x="24" y="40" width="16" height="8" fill="#c0c0c0" stroke="#000" stroke-width="2"/><rect x="12" y="48" width="40" height="8" fill="#c0c0c0" stroke="#000" stroke-width="2"/></svg>
                 <span>Arbeitsplatz</span>
             </div>
 
-            <!-- Icon: Papierkorb -->
             <div class="desktop-icon icon-pos-2" onclick="openQuoteWindow('Papierkorb', 'Die Katze muss gerettet werden!')">
                 <svg viewBox="0 0 64 64"><path d="M16 20 h32 l-4 36 h-24 z" fill="#fff" stroke="#000" stroke-width="2"/><rect x="12" y="12" width="40" height="8" fill="#c0c0c0" stroke="#000" stroke-width="2"/><rect x="28" y="6" width="8" height="6" fill="#c0c0c0" stroke="#000" stroke-width="2"/><line x1="24" y1="24" x2="24" y2="52" stroke="#000" stroke-width="2"/><line x1="32" y1="24" x2="32" y2="52" stroke="#000" stroke-width="2"/><line x1="40" y1="24" x2="40" y2="52" stroke="#000" stroke-width="2"/></svg>
                 <span>Papierkorb</span>
             </div>
 
-            <!-- Icon: Editor -->
             <div class="desktop-icon icon-pos-3" onclick="openQuoteWindow('Editor', 'Ich werde der König der Piraten!')">
                 <svg viewBox="0 0 64 64"><rect x="16" y="8" width="32" height="48" fill="#fff" stroke="#000" stroke-width="2"/><rect x="16" y="8" width="32" height="10" fill="#000080" stroke="#000" stroke-width="2"/><line x1="22" y1="26" x2="42" y2="26" stroke="#000" stroke-width="2"/><line x1="22" y1="34" x2="42" y2="34" stroke="#000" stroke-width="2"/><line x1="22" y1="42" x2="38" y2="42" stroke="#000" stroke-width="2"/></svg>
                 <span>Editor</span>
             </div>
 
-            <!-- Icon: Internet -->
             <div class="desktop-icon icon-pos-4" onclick="openQuoteWindow('Internet', 'Bambus News: Alles was du wissen musst.')">
                 <svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="24" fill="#fff" stroke="#000" stroke-width="2"/><path d="M14,32 Q32,8 50,32 Q32,56 14,32" fill="none" stroke="#000080" stroke-width="2"/><path d="M32,8 Q16,32 32,56 Q48,32 32,8" fill="none" stroke="#000080" stroke-width="2"/><line x1="8" y1="32" x2="56" y2="32" stroke="#000080" stroke-width="2"/></svg>
                 <span>Internet</span>
             </div>
 
-            <!-- Icon: Paint -->
             <div class="desktop-icon icon-pos-5" onclick="openQuoteWindow('Paint', 'Kunst wäscht den Staub des Alltags von der Seele.')">
                 <svg viewBox="0 0 64 64"><ellipse cx="32" cy="32" rx="24" ry="20" fill="#fff" stroke="#000" stroke-width="2"/><circle cx="20" cy="26" r="4" fill="#f00"/><circle cx="32" cy="20" r="4" fill="#0f0"/><circle cx="44" cy="26" r="4" fill="#00f"/><circle cx="38" cy="38" r="4" fill="#ff0"/><circle cx="24" cy="40" r="4" fill="#000"/></svg>
                 <span>Paint</span>
             </div>
 
-            <!-- Icon: P.enis.jpg -->
             <div class="desktop-icon icon-pos-6" onclick="openQuoteWindow('Bildanzeige', 'Ein Bild sagt mehr als tausend Worte.')">
                 <svg viewBox="0 0 64 64"><rect x="12" y="14" width="40" height="36" fill="#fff" stroke="#000" stroke-width="2"/><circle cx="22" cy="24" r="4" fill="#ffeb3b" stroke="#000" stroke-width="1"/><polygon points="12,50 32,30 42,40 48,34 52,40 52,50" fill="#4caf50" stroke="#000" stroke-width="1"/></svg>
                 <span>P.enis.jpg</span>
             </div>
 
-            <!-- Icon: Security.exe (FNAF) -->
             <div class="desktop-icon icon-pos-7" onclick="openApp('security-window', initSecurity)">
                 <svg viewBox="0 0 64 64">
                     <rect x="16" y="20" width="32" height="24" fill="#333" stroke="#000" stroke-width="2"/>
@@ -385,7 +373,6 @@
                 <span>Security.exe</span>
             </div>
 
-            <!-- Icon: Pinball.exe -->
             <div class="desktop-icon icon-pos-8" onclick="openApp('pinball-window', initPinball)">
                 <svg viewBox="0 0 64 64">
                     <rect x="12" y="10" width="40" height="44" fill="#000080" stroke="#000" stroke-width="2"/>
@@ -396,7 +383,6 @@
                 <span>Pinball.exe</span>
             </div>
 
-            <!-- Icon: Verhör.exe -->
             <div class="desktop-icon icon-pos-9" onclick="openApp('verhoer-window', initVerhoer)">
                 <svg viewBox="0 0 64 64">
                     <rect x="8" y="12" width="48" height="32" fill="#fff" stroke="#000" stroke-width="2"/>
@@ -406,11 +392,8 @@
                 </svg>
                 <span>Verhör.exe</span>
             </div>
-
-            <!-- Die restlichen dynamischen Icons werden per JS hinzugefügt -->
         </div>
 
-        <!-- Zitat Fenster -->
         <div id="quote-window" class="window win95-border drag-window">
             <div class="title-bar drag-handle">
                 <span id="quote-title">Nachricht</span>
@@ -424,7 +407,6 @@
             </div>
         </div>
 
-        <!-- Crash Fenster -->
         <div id="crash-window" class="window win95-border drag-window" style="width: 350px;">
             <div class="title-bar drag-handle" style="background-color: darkred;">
                 <span>Kritischer Systemfehler</span>
@@ -441,7 +423,6 @@
             </div>
         </div>
 
-        <!-- Snake Fenster -->
         <div id="snake-window" class="window win95-border drag-window" style="width: 250px;">
             <div class="title-bar drag-handle">
                 <span>Snake.exe</span>
@@ -458,7 +439,6 @@
             </div>
         </div>
 
-        <!-- Security (FNAF) Fenster -->
         <div id="security-window" class="window win95-border drag-window" style="width: 320px;">
             <div class="title-bar drag-handle" style="background-color: #333;">
                 <span>CAM_04 - Security.exe</span>
@@ -470,7 +450,6 @@
             </div>
         </div>
 
-        <!-- Pinball Fenster -->
         <div id="pinball-window" class="window win95-border drag-window" style="width: 260px;">
             <div class="title-bar drag-handle">
                 <span>Pinball.exe</span>
@@ -482,7 +461,6 @@
             </div>
         </div>
 
-        <!-- Verhör Fenster -->
         <div id="verhoer-window" class="window win95-border drag-window" style="width: 320px;">
             <div class="title-bar drag-handle">
                 <span>Verhör.exe</span>
@@ -498,7 +476,6 @@
             </div>
         </div>
 
-        <!-- Taskleiste -->
         <div class="taskbar">
             <div class="win95-border start-btn" onclick="openApp('snake-window', initSnake)">
                 <svg viewBox="0 0 20 20" width="16" height="16">
@@ -518,7 +495,6 @@
         let highestZIndex = 100;
         let isCrashing = false;
 
-        // Vollbild & Wechsel
         function triggerTimeTravel() {
             if(isTimeTraveling) return;
             isTimeTraveling = true;
@@ -541,7 +517,7 @@
                 retroView.style.display = 'block';
                 updateClock();
                 setupDraggableWindows();
-                generateFillerIcons(); // Füllt den leeren Desktop
+                generateFillerIcons();
             }, 500);
         }
 
@@ -554,149 +530,6 @@
                 h = h % 12 || 12; m = m < 10 ? '0' + m : m;
                 clockEl.textContent = `${h}:${m} ${ampm}`;
             }, 1000);
-        }
-
-        // Funktion zum Erstellen der ganz vielen dynamischen Retro-Icons
-        function generateFillerIcons() {
-            const container = document.getElementById('desktop-icons');
-            const retroNames = [
-                "Doom.exe", "Limewire", "ICQ", "Winamp", "Minesweeper", "Solitaire", 
-                "Napster", "Kazaa", "eMule", "Quake.exe", "TombRaider", "Encarta95", 
-                "AOL", "Netscape", "DialUp", "WinZip", "RealPlayer", "WinRAR", 
-                "Half-Life", "SimCity2000", "CS_1.6", "Gothic.exe", "Diablo2", 
-                "Warcraft3", "Starcraft", "NeroRom", "BearShare", "Morpheus", 
-                "Messenger", "MySpace", "Yahoo_Chat", "AgeOfEmpires", "RollerCoaster",
-                "Mirc", "DukeNukem", "Worms", "CommandConquer", "Lemmings", "MonkeyIsland", "ThemePark"
-            ];
-            
-            // Generiere ~45 Icons für einen vollen Desktop
-            for(let i=0; i<45; i++) {
-                const iconName = retroNames[i % retroNames.length];
-                const icon = document.createElement('div');
-                icon.className = 'desktop-icon';
-                
-                // Wir suchen nach einer freien, zufälligen Position
-                let left, top;
-                let valid = false;
-                let attempts = 0;
-
-                while(!valid && attempts < 100) {
-                    // Bleib innerhalb des sichtbaren Bereichs (abzüglich Taskleisten/Rand-Puffer)
-                    left = Math.random() * (window.innerWidth - 100);
-                    top = Math.random() * (window.innerHeight - 100);
-                    
-                    // Kollisionen grob verhindern:
-                    // Linke Seite (Statische Icons Spalte 1 & 2)
-                    let inTopLeft = (left < 200 && top < 350);
-                    
-                    // Oben Rechts (Verhör)
-                    let inTopRight = (left > window.innerWidth - 150 && top < 100);
-                    
-                    if(!inTopLeft && !inTopRight) {
-                        valid = true;
-                    }
-                    attempts++;
-                }
-                
-                icon.style.left = `${left}px`;
-                icon.style.top = `${top}px`;
-                
-                // Ein generisches Programm-Icon als SVG
-                icon.innerHTML = `
-                    <svg viewBox="0 0 64 64">
-                        <rect x="16" y="12" width="32" height="40" fill="#fff" stroke="#000" stroke-width="2"/>
-                        <rect x="16" y="12" width="32" height="12" fill="#c0c0c0" stroke="#000" stroke-width="2"/>
-                        <rect x="22" y="30" width="20" height="14" fill="#000080"/>
-                        <path d="M22 40 L38 40 M22 44 L34 44" stroke="#fff" stroke-width="2"/>
-                    </svg>
-                    <span>${iconName}</span>
-                `;
-                
-                icon.onclick = () => handleDynamicIconClick();
-                container.appendChild(icon);
-            }
-        }
-
-        function handleDynamicIconClick() {
-            if(isCrashing) return; // Wenn er schon abstürzt, ignoriere Klicks
-
-            const rand = Math.random();
-            // 80% Chance auf Google-Suche
-            if(rand < 0.8) {
-                const queries = [
-                    'warum leuchtet mein toastbrot',
-                    'haben pinguine knie',
-                    'wie fange ich einen entflohenen reisebus bei der carkontrolle',
-                    'kettlebell halos während der arbeitszeit erlaubt',
-                    'taser 10 anleitung für anfänger',
-                    'bambus news echte nachrichten',
-                    'wie werde ich ein lächelnder fux auf tiktok',
-                    'was passiert wenn man im schwerverkehrszentrum erstfeld den falschen knopf drückt',
-                    'grappling techniken gegen unkooperative drucker',
-                    'warum ist der chef vom svz so streng',
-                    'wie besiege ich meinen chef im bjj'
-                ];
-                const q = queries[Math.floor(Math.random() * queries.length)];
-                window.location.href = "https://www.google.com/search?q=" + encodeURIComponent(q);
-            } else {
-                // 20% Chance auf System Crash
-                triggerSystemCrash();
-            }
-        }
-
-        function triggerSystemCrash() {
-            isCrashing = true;
-            // Bildbeben starten
-            document.getElementById('retro-view').classList.add('shake-active');
-            
-            // Crash Fenster anzeigen
-            const win = document.getElementById('crash-window');
-            win.style.display = 'block';
-            bringToFront('crash-window');
-            win.style.top = '50%';
-            win.style.left = '50%';
-            win.style.transform = 'translate(-50%, -50%)';
-
-            let countdown = 5;
-            const countEl = document.getElementById('crash-countdown');
-            countEl.innerText = countdown;
-
-            // Zähle runter
-            const crashInterval = setInterval(() => {
-                countdown--;
-                countEl.innerText = countdown;
-                
-                if(countdown <= 0) {
-                    clearInterval(crashInterval);
-                    // Umleitung zur Ziel-Webseite
-                    window.location.href = "https://bullenpower-uri.ch";
-                }
-            }, 1000);
-        }
-
-        function bringToFront(id) {
-            highestZIndex++;
-            document.getElementById(id).style.zIndex = highestZIndex;
-        }
-
-        function closeWindow(id) {
-            document.getElementById(id).style.display = 'none';
-        }
-
-        function openApp(id, initFunc) {
-            const win = document.getElementById(id);
-            if(win.style.display === 'block') { bringToFront(id); return; }
-            win.style.display = 'block';
-            bringToFront(id);
-            if(initFunc) initFunc();
-        }
-
-        function closeApp(id, cancelVar) {
-            closeWindow(id);
-            if(typeof cancelVar === 'number') {
-                clearInterval(cancelVar);
-                cancelAnimationFrame(cancelVar);
-            }
         }
 
         function setupDraggableWindows() {
@@ -725,6 +558,31 @@
             });
         }
 
+        function bringToFront(id) {
+            highestZIndex++;
+            document.getElementById(id).style.zIndex = highestZIndex;
+        }
+
+        function closeWindow(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        function openApp(id, initFunc) {
+            const win = document.getElementById(id);
+            if(win.style.display === 'block') { bringToFront(id); return; }
+            win.style.display = 'block';
+            bringToFront(id);
+            if(initFunc) initFunc();
+        }
+
+        function closeApp(id, cancelVar) {
+            closeWindow(id);
+            if(typeof cancelVar === 'number') {
+                clearInterval(cancelVar);
+                cancelAnimationFrame(cancelVar);
+            }
+        }
+
         function openQuoteWindow(title, text) {
             document.getElementById('quote-title').innerText = title;
             document.getElementById('quote-text').innerText = text;
@@ -734,6 +592,113 @@
             win.style.top = `calc(30% + ${offset}px)`;
             win.style.left = `calc(30% + ${offset}px)`;
             bringToFront('quote-window');
+        }
+
+        function generateFillerIcons() {
+            const container = document.getElementById('desktop-icons');
+            const retroNames = [
+                "Doom.exe", "Limewire", "ICQ", "Winamp", "Minesweeper", "Solitaire", 
+                "Napster", "Kazaa", "eMule", "Quake.exe", "TombRaider", "Encarta95", 
+                "AOL", "Netscape", "DialUp", "WinZip", "RealPlayer", "WinRAR", 
+                "Half-Life", "SimCity2000", "CS_1.6", "Gothic.exe", "Diablo2", 
+                "Warcraft3", "Starcraft", "NeroRom", "BearShare", "Morpheus", 
+                "Messenger", "MySpace", "Yahoo_Chat", "AgeOfEmpires", "RollerCoaster",
+                "Mirc", "DukeNukem", "Worms", "CommandConquer", "Lemmings", "MonkeyIsland", "ThemePark"
+            ];
+            
+            // Generiere 70 Icons, um den Desktop maximal zu füllen
+            for(let i=0; i<70; i++) {
+                const iconName = retroNames[i % retroNames.length];
+                const icon = document.createElement('div');
+                icon.className = 'desktop-icon';
+                
+                let left, top;
+                let valid = false;
+                let attempts = 0;
+
+                while(!valid && attempts < 150) {
+                    left = Math.random() * (window.innerWidth - 90);
+                    top = Math.random() * (window.innerHeight - 90);
+                    
+                    let inTopLeft = (left < 200 && top < 350);
+                    let inTopRight = (left > window.innerWidth - 150 && top < 100);
+                    
+                    if(!inTopLeft && !inTopRight) {
+                        valid = true;
+                    }
+                    attempts++;
+                }
+                
+                icon.style.left = `${left}px`;
+                icon.style.top = `${top}px`;
+                
+                icon.innerHTML = `
+                    <svg viewBox="0 0 64 64">
+                        <rect x="16" y="12" width="32" height="40" fill="#fff" stroke="#000" stroke-width="2"/>
+                        <rect x="16" y="12" width="32" height="12" fill="#c0c0c0" stroke="#000" stroke-width="2"/>
+                        <rect x="22" y="30" width="20" height="14" fill="#000080"/>
+                        <path d="M22 40 L38 40 M22 44 L34 44" stroke="#fff" stroke-width="2"/>
+                    </svg>
+                    <span>${iconName}</span>
+                `;
+                
+                icon.onclick = () => handleDynamicIconClick();
+                container.appendChild(icon);
+            }
+        }
+
+        function handleDynamicIconClick() {
+            if(isCrashing) return;
+
+            const rand = Math.random();
+            if(rand < 0.8) {
+                const queries = [
+                    'Warum kam ich zu früh?',
+                    'Wo ist mein Vater?',
+                    'Wer hat die Milch getrunken?',
+                    'Wo ist der Autoschlüssel?',
+                    'Warum haben Beckenrieder rote Haare?',
+                    'Werde ich schlauer, oder die Fragen dümmer?',
+                    'Wer war zuerst, ich oder meine Katze?',
+                    'Wie gewinne ich Diskussionen mit der Kripo?',
+                    'Grappling dummy wehrt sich',
+                    'Schwerverkehrszentrum Erstfeld Pausenraum',
+                    'Taser 10 lustige unfälle',
+                    'Bambus News abonnieren',
+                    'Wie werde ich schnell Schichtchef',
+                    'Der lächelnde Fux viral gehen'
+                ];
+                const q = queries[Math.floor(Math.random() * queries.length)];
+                window.location.href = "https://www.google.com/search?q=" + encodeURIComponent(q);
+            } else {
+                triggerSystemCrash();
+            }
+        }
+
+        function triggerSystemCrash() {
+            isCrashing = true;
+            document.getElementById('retro-view').classList.add('shake-active');
+            
+            const win = document.getElementById('crash-window');
+            win.style.display = 'block';
+            bringToFront('crash-window');
+            win.style.top = '50%';
+            win.style.left = '50%';
+            win.style.transform = 'translate(-50%, -50%)';
+
+            let countdown = 5;
+            const countEl = document.getElementById('crash-countdown');
+            countEl.innerText = countdown;
+
+            const crashInterval = setInterval(() => {
+                countdown--;
+                countEl.innerText = countdown;
+                
+                if(countdown <= 0) {
+                    clearInterval(crashInterval);
+                    window.location.href = "https://bullenpower-uri.ch";
+                }
+            }, 1000);
         }
 
         let snakeGameInterval;
