@@ -5,9 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Zeitreise OS</title>
     
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&family=Press+Start+2P&family=Pixelify+Sans:wght@400;600&display=swap" rel="stylesheet">
+
+    <!-- Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <style>
         :root {
@@ -92,7 +96,6 @@
             cursor: inherit;
         }
 
-        /* CRT Scanlines und Vignette */
         .crt-overlay {
             position: absolute;
             top: 0; left: 0; width: 100vw; height: 100vh;
@@ -120,6 +123,24 @@
             60% { opacity: 1; }
             80% { opacity: 0.90; }
             100% { opacity: 0.95; }
+        }
+
+        @keyframes violent-shake {
+            0% { transform: translate(3px, 2px) rotate(0deg); }
+            10% { transform: translate(-2px, -3px) rotate(-1deg); }
+            20% { transform: translate(-4px, 0px) rotate(1deg); }
+            30% { transform: translate(0px, 3px) rotate(0deg); }
+            40% { transform: translate(2px, -2px) rotate(1deg); }
+            50% { transform: translate(-2px, 3px) rotate(-1deg); }
+            60% { transform: translate(-4px, 2px) rotate(0deg); }
+            70% { transform: translate(3px, 2px) rotate(-1deg); }
+            80% { transform: translate(-2px, -2px) rotate(1deg); }
+            90% { transform: translate(3px, 3px) rotate(0deg); }
+            100% { transform: translate(2px, -3px) rotate(-1deg); }
+        }
+
+        .shake-active {
+            animation: violent-shake 0.1s infinite;
         }
 
         .desktop-icons-container {
@@ -162,7 +183,7 @@
             text-shadow: none; padding: 1px 3px;
         }
 
-        /* Positionen der Icons */
+        /* Feste Positionen der statischen Icons */
         .icon-pos-1 { top: 10px; left: 10px; }
         .icon-pos-2 { top: 90px; left: 10px; }
         .icon-pos-3 { top: 170px; left: 10px; }
@@ -264,7 +285,6 @@
             width: 16px; height: 100%; background-color: var(--win-blue);
         }
 
-        /* Canvas Spiele */
         canvas {
             display: block; margin: 0 auto;
             border: 2px solid var(--win-mid);
@@ -313,6 +333,17 @@
             margin-left: auto; height: 100%; padding: 0 8px; display: flex; align-items: center;
             font-size: 12px; color: black;
         }
+
+        #crash-countdown {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 24px;
+            color: red;
+            margin: 20px 0;
+            display: inline-block;
+            background: black;
+            padding: 10px 20px;
+            border: 2px solid var(--win-dark);
+        }
     </style>
 </head>
 <body>
@@ -326,7 +357,7 @@
         <div class="crt-overlay"></div>
         <div class="crt-vignette"></div>
         
-        <div class="desktop-icons-container">
+        <div class="desktop-icons-container" id="desktop-icons">
             <!-- Icon: Arbeitsplatz -->
             <div class="desktop-icon icon-pos-1" onclick="openQuoteWindow('Arbeitsplatz', 'Verberge deine Absichten.')">
                 <svg viewBox="0 0 64 64"><rect x="12" y="12" width="40" height="28" fill="#fff" stroke="#000" stroke-width="2"/><rect x="16" y="16" width="32" height="20" fill="#008080" /><rect x="24" y="40" width="16" height="8" fill="#c0c0c0" stroke="#000" stroke-width="2"/><rect x="12" y="48" width="40" height="8" fill="#c0c0c0" stroke="#000" stroke-width="2"/></svg>
@@ -363,7 +394,7 @@
                 <span>P.enis.jpg</span>
             </div>
 
-            <!-- NEU Icon: Security.exe (FNAF) -->
+            <!-- Icon: Security.exe (FNAF) -->
             <div class="desktop-icon icon-pos-7" onclick="openApp('security-window', initSecurity)">
                 <svg viewBox="0 0 64 64">
                     <rect x="16" y="20" width="32" height="24" fill="#333" stroke="#000" stroke-width="2"/>
@@ -374,33 +405,35 @@
                 <span>Security.exe</span>
             </div>
 
-            <!-- NEU Icon: Pinball.exe -->
+            <!-- Icon: Pinball.exe -->
             <div class="desktop-icon icon-pos-8" onclick="openApp('pinball-window', initPinball)">
                 <svg viewBox="0 0 64 64">
                     <rect x="12" y="10" width="40" height="44" fill="#000080" stroke="#000" stroke-width="2"/>
                     <circle cx="32" cy="24" r="6" fill="#c0c0c0"/>
                     <line x1="20" y1="44" x2="30" y2="48" stroke="#ffeb3b" stroke-width="3"/>
                     <line x1="44" y1="44" x2="34" y2="48" stroke="#ffeb3b" stroke-width="3"/>
-            </svg>
-            <span>Pinball.exe</span>
-        </div>
+                </svg>
+                <span>Pinball.exe</span>
+            </div>
 
-        <!-- NEU Icon: Verhör.exe -->
-        <div class="desktop-icon icon-pos-9" onclick="openApp('verhoer-window', initVerhoer)">
-            <svg viewBox="0 0 64 64">
-                <rect x="8" y="12" width="48" height="32" fill="#fff" stroke="#000" stroke-width="2"/>
-                <polygon points="16,44 26,44 16,56" fill="#fff" stroke="#000" stroke-width="2"/>
-                <line x1="18" y1="44" x2="24" y2="44" stroke="#fff" stroke-width="4"/>
-                <text x="32" y="36" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#000080" text-anchor="middle">?</text>
-            </svg>
-            <span>Verhör.exe</span>
-        </div>
+            <!-- Icon: Verhör.exe -->
+            <div class="desktop-icon icon-pos-9" onclick="openApp('verhoer-window', initVerhoer)">
+                <svg viewBox="0 0 64 64">
+                    <rect x="8" y="12" width="48" height="32" fill="#fff" stroke="#000" stroke-width="2"/>
+                    <polygon points="16,44 26,44 16,56" fill="#fff" stroke="#000" stroke-width="2"/>
+                    <line x1="18" y1="44" x2="24" y2="44" stroke="#fff" stroke-width="4"/>
+                    <text x="32" y="36" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#000080" text-anchor="middle">?</text>
+                </svg>
+                <span>Verhör.exe</span>
+            </div>
 
-        <!-- Icon: Geheimnis (Zentriert) -->
-        <div class="desktop-icon interactive-center" onclick="openSecretWindow()">
+            <!-- Icon: Geheimnis (Zentriert) -->
+            <div class="desktop-icon interactive-center" onclick="openSecretWindow()">
                 <svg viewBox="0 0 64 64"><rect x="6" y="12" width="26" height="10" fill="#fbc02d" stroke="#000" stroke-width="2"/><rect x="6" y="20" width="52" height="34" fill="#fff59d" stroke="#000" stroke-width="2"/><rect x="6" y="22" width="52" height="2" fill="#fff" opacity="0.5"/></svg>
                 <span>Geheimnis</span>
             </div>
+            
+            <!-- Die restlichen dynamischen Icons werden per JS hinzugefügt -->
         </div>
 
         <!-- Zitat Fenster -->
@@ -430,6 +463,23 @@
                 </div>
                 <div class="win95-inset">
                     <div class="progress-container" id="progress-container"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Crash Fenster -->
+        <div id="crash-window" class="window win95-border drag-window" style="width: 350px;">
+            <div class="title-bar drag-handle" style="background-color: darkred;">
+                <span>Kritischer Systemfehler</span>
+                <button class="close-btn" onclick="closeWindow('crash-window')" style="pointer-events: none; opacity: 0.5;">X</button>
+            </div>
+            <div class="window-content">
+                <div style="font-weight: bold; color: red; margin-bottom: 15px;">
+                    FEHLER 0x000000F4: <br>Der PC wird heruntergefahren!
+                </div>
+                <div id="crash-countdown">5</div>
+                <div style="font-size: 12px; margin-top: 10px;">
+                    Das System wird in wenigen Sekunden zum Neustart gezwungen...
                 </div>
             </div>
         </div>
@@ -470,29 +520,29 @@
                 <button class="close-btn" onclick="closeApp('pinball-window', pinballAnimFrame)">X</button>
             </div>
             <div class="window-content">
-            <canvas id="pinball-canvas" width="220" height="300"></canvas>
-            <div class="arcade-font" style="margin-top: 10px; font-size: 8px;">Klick auf das Fenster zum Flippern!</div>
-        </div>
-    </div>
-
-    <!-- Verhör Fenster -->
-    <div id="verhoer-window" class="window win95-border drag-window" style="width: 320px;">
-        <div class="title-bar drag-handle">
-            <span>Verhör.exe</span>
-            <button class="close-btn" onclick="closeApp('verhoer-window')">X</button>
-        </div>
-        <div class="window-content" style="display: flex; flex-direction: column; gap: 10px;">
-            <div id="verhoer-chat" class="win95-inset" style="height: 180px; background: #fff; overflow-y: auto; text-align: left; padding: 8px; font-size: 14px;">
-            </div>
-            <div style="display: flex; gap: 5px;">
-                <input type="text" id="verhoer-input" class="win95-inset" style="flex-grow: 1; padding: 4px; font-family: inherit; font-size: 14px;" onkeydown="if(event.key === 'Enter') sendVerhoer()">
-                <button class="win95-border" style="font-weight: bold; cursor: pointer; padding: 0 10px; font-family: inherit; font-size: 14px;" onclick="sendVerhoer()">Senden</button>
+                <canvas id="pinball-canvas" width="220" height="300"></canvas>
+                <div class="arcade-font" style="margin-top: 10px; font-size: 8px;">Klick auf das Fenster zum Flippern!</div>
             </div>
         </div>
-    </div>
 
-    <!-- Taskleiste -->
-    <div class="taskbar">
+        <!-- Verhör Fenster -->
+        <div id="verhoer-window" class="window win95-border drag-window" style="width: 320px;">
+            <div class="title-bar drag-handle">
+                <span>Verhör.exe</span>
+                <button class="close-btn" onclick="closeApp('verhoer-window')">X</button>
+            </div>
+            <div class="window-content" style="display: flex; flex-direction: column; gap: 10px;">
+                <div id="verhoer-chat" class="win95-inset" style="height: 180px; background: #fff; overflow-y: auto; text-align: left; padding: 8px; font-size: 14px;">
+                </div>
+                <div style="display: flex; gap: 5px;">
+                    <input type="text" id="verhoer-input" class="win95-inset" style="flex-grow: 1; padding: 4px; font-family: inherit; font-size: 14px;" onkeydown="if(event.key === 'Enter') sendVerhoer()">
+                    <button class="win95-border" style="font-weight: bold; cursor: pointer; padding: 0 10px; font-family: inherit; font-size: 14px;" onclick="sendVerhoer()">Senden</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Taskleiste -->
+        <div class="taskbar">
             <div class="win95-border start-btn" onclick="openApp('snake-window', initSnake)">
                 <svg viewBox="0 0 20 20" width="16" height="16">
                     <rect x="0" y="0" width="8" height="8" fill="#f44336"/><rect x="10" y="0" width="8" height="8" fill="#4caf50"/><rect x="0" y="10" width="8" height="8" fill="#2196f3"/><rect x="10" y="10" width="8" height="8" fill="#ffeb3b"/>
@@ -509,6 +559,7 @@
     <script>
         let isTimeTraveling = false;
         let highestZIndex = 100;
+        let isCrashing = false;
 
         // Vollbild & Wechsel
         function triggerTimeTravel() {
@@ -533,6 +584,7 @@
                 retroView.style.display = 'block';
                 updateClock();
                 setupDraggableWindows();
+                generateFillerIcons(); // Füllt den leeren Desktop
             }, 500);
         }
 
@@ -544,6 +596,119 @@
                 const ampm = h >= 12 ? 'PM' : 'AM';
                 h = h % 12 || 12; m = m < 10 ? '0' + m : m;
                 clockEl.textContent = `${h}:${m} ${ampm}`;
+            }, 1000);
+        }
+
+        // Funktion zum Erstellen der ganz vielen dynamischen Retro-Icons
+        function generateFillerIcons() {
+            const container = document.getElementById('desktop-icons');
+            const retroNames = [
+                "Doom.exe", "Limewire", "ICQ", "Winamp", "Minesweeper", "Solitaire", 
+                "Napster", "Kazaa", "eMule", "Quake.exe", "TombRaider", "Encarta95", 
+                "AOL", "Netscape", "DialUp", "WinZip", "RealPlayer", "WinRAR", 
+                "Half-Life", "SimCity2000", "CS_1.6", "Gothic.exe", "Diablo2", 
+                "Warcraft3", "Starcraft", "NeroRom", "BearShare", "Morpheus", 
+                "Messenger", "MySpace", "Yahoo_Chat", "AgeOfEmpires", "RollerCoaster",
+                "Mirc", "DukeNukem", "Worms", "CommandConquer", "Lemmings", "MonkeyIsland", "ThemePark"
+            ];
+            
+            // Generiere ~45 Icons für einen vollen Desktop
+            for(let i=0; i<45; i++) {
+                const iconName = retroNames[i % retroNames.length];
+                const icon = document.createElement('div');
+                icon.className = 'desktop-icon';
+                
+                // Wir suchen nach einer freien, zufälligen Position
+                let left, top;
+                let valid = false;
+                let attempts = 0;
+
+                while(!valid && attempts < 100) {
+                    // Bleib innerhalb des sichtbaren Bereichs (abzüglich Taskleisten/Rand-Puffer)
+                    left = Math.random() * (window.innerWidth - 100);
+                    top = Math.random() * (window.innerHeight - 100);
+                    
+                    // Kollisionen grob verhindern: 
+                    // Mitte (Geheimnis-Ordner)
+                    let inCenter = (left > window.innerWidth/2 - 100 && left < window.innerWidth/2 + 50) && 
+                                   (top > window.innerHeight/2 - 100 && top < window.innerHeight/2 + 50);
+                    
+                    // Linke Seite (Statische Icons Spalte 1 & 2)
+                    let inTopLeft = (left < 200 && top < 350);
+                    
+                    // Oben Rechts (Verhör)
+                    let inTopRight = (left > window.innerWidth - 150 && top < 100);
+                    
+                    if(!inCenter && !inTopLeft && !inTopRight) {
+                        valid = true;
+                    }
+                    attempts++;
+                }
+                
+                icon.style.left = `${left}px`;
+                icon.style.top = `${top}px`;
+                
+                // Ein generisches Programm-Icon als SVG
+                icon.innerHTML = `
+                    <svg viewBox="0 0 64 64">
+                        <rect x="16" y="12" width="32" height="40" fill="#fff" stroke="#000" stroke-width="2"/>
+                        <rect x="16" y="12" width="32" height="12" fill="#c0c0c0" stroke="#000" stroke-width="2"/>
+                        <rect x="22" y="30" width="20" height="14" fill="#000080"/>
+                        <path d="M22 40 L38 40 M22 44 L34 44" stroke="#fff" stroke-width="2"/>
+                    </svg>
+                    <span>${iconName}</span>
+                `;
+                
+                icon.onclick = () => handleDynamicIconClick();
+                container.appendChild(icon);
+            }
+        }
+
+        function handleDynamicIconClick() {
+            if(isCrashing) return; // Wenn er schon abstürzt, ignoriere Klicks
+
+            const rand = Math.random();
+            // 80% Chance auf Konfetti
+            if(rand < 0.8) {
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    zIndex: 10000 // Wichtig, um über dem CRT-Overlay zu sein
+                });
+            } else {
+                // 20% Chance auf System Crash
+                triggerSystemCrash();
+            }
+        }
+
+        function triggerSystemCrash() {
+            isCrashing = true;
+            // Bildbeben starten
+            document.getElementById('retro-view').classList.add('shake-active');
+            
+            // Crash Fenster anzeigen
+            const win = document.getElementById('crash-window');
+            win.style.display = 'block';
+            bringToFront('crash-window');
+            win.style.top = '50%';
+            win.style.left = '50%';
+            win.style.transform = 'translate(-50%, -50%)';
+
+            let countdown = 5;
+            const countEl = document.getElementById('crash-countdown');
+            countEl.innerText = countdown;
+
+            // Zähle runter
+            const crashInterval = setInterval(() => {
+                countdown--;
+                countEl.innerText = countdown;
+                
+                if(countdown <= 0) {
+                    clearInterval(crashInterval);
+                    // Umleitung zur Ziel-Webseite
+                    window.location.href = "https://bullenpower-uri.ch";
+                }
             }, 1000);
         }
 
@@ -572,7 +737,6 @@
             }
         }
 
-        // Draggable Logic
         function setupDraggableWindows() {
             const windows = document.querySelectorAll('.drag-window');
             windows.forEach(win => {
@@ -599,7 +763,6 @@
             });
         }
 
-        // Zitate
         function openQuoteWindow(title, text) {
             document.getElementById('quote-title').innerText = title;
             document.getElementById('quote-text').innerText = text;
@@ -611,7 +774,6 @@
             bringToFront('quote-window');
         }
 
-        // Geheimnis
         let progressInterval;
         function openSecretWindow() {
             const win = document.getElementById('secret-window');
@@ -704,10 +866,8 @@
             const imgData = secCtx.createImageData(w, h);
             const data = imgData.data;
             
-            // TV Rauschen generieren
             for (let i = 0; i < data.length; i += 4) {
                 const noise = Math.random() * 255;
-                // Grünstichiges Rauschen für Kamera-Look
                 data[i] = noise * 0.2;     // R
                 data[i+1] = noise * 0.8;   // G
                 data[i+2] = noise * 0.2;   // B
@@ -715,19 +875,16 @@
             }
             secCtx.putImageData(imgData, 0, 0);
 
-            // Glitchy Augen zeichnen (flackernd)
             if(Math.random() > 0.85) {
                 secCtx.fillStyle = 'white';
                 secCtx.fillRect(100 + (Math.random()*4-2), 80 + (Math.random()*4-2), 15, 15);
                 secCtx.fillRect(160 + (Math.random()*4-2), 80 + (Math.random()*4-2), 15, 15);
                 
-                // Rote Pupillen
                 secCtx.fillStyle = 'red';
                 secCtx.fillRect(105, 85, 5, 5);
                 secCtx.fillRect(165, 85, 5, 5);
             }
             
-            // Scanline Artefakte
             if(Math.random() > 0.9) {
                 secCtx.fillStyle = 'rgba(0,0,0,0.5)';
                 secCtx.fillRect(0, Math.random()*h, w, Math.random()*20);
@@ -748,12 +905,10 @@
             pinballLoop();
         }
 
-        // Klick um den Flipper/Paddle zu bewegen
         pbCanvas.addEventListener('mousedown', (e) => {
             const rect = pbCanvas.getBoundingClientRect();
             const clickX = e.clientX - rect.left;
             paddle.x = clickX - (paddle.w / 2);
-            // Begrenzung
             if(paddle.x < 0) paddle.x = 0;
             if(paddle.x + paddle.w > pbCanvas.width) paddle.x = pbCanvas.width - paddle.w;
         });
@@ -761,75 +916,65 @@
         function pinballLoop() {
             const w = pbCanvas.width; const h = pbCanvas.height;
             
-            // Motion Blur / Trail Effekt
             pbCtx.fillStyle = 'rgba(0, 0, 0, 0.3)';
             pbCtx.fillRect(0, 0, w, h);
 
-            // Ball Update
             ball.x += ball.vx;
             ball.y += ball.vy;
 
-            // Wand Kollisionen
             if (ball.x <= 0 || ball.x >= w - ball.size) ball.vx *= -1;
             if (ball.y <= 0) ball.vy *= -1;
             
-            // Boden (Game Over / Reset)
             if (ball.y >= h) {
                 ball.x = 110; ball.y = 50; ball.vy = 4; ball.vx = (Math.random() > 0.5 ? 4 : -4);
             }
 
-            // Paddle Kollision
             if (ball.y + ball.size >= paddle.y && ball.x >= paddle.x && ball.x <= paddle.x + paddle.w) {
                 ball.vy *= -1;
-                ball.y = paddle.y - ball.size; // Rausziehen um Steckenbleiben zu verhindern
-                // Leichter Drall je nach Aufschlagpunkt
+                ball.y = paddle.y - ball.size; 
                 let hitPos = (ball.x - (paddle.x + paddle.w/2)) / (paddle.w/2);
                 ball.vx = hitPos * 5; 
             }
 
-            // Zeichne Paddle
             pbCtx.fillStyle = '#000080';
             pbCtx.fillRect(paddle.x, paddle.y, paddle.w, paddle.h);
             pbCtx.strokeStyle = '#fff';
             pbCtx.strokeRect(paddle.x, paddle.y, paddle.w, paddle.h);
 
-            // Zeichne Ball
-        pbCtx.fillStyle = '#ffeb3b';
-        pbCtx.fillRect(ball.x, ball.y, ball.size, ball.size);
+            pbCtx.fillStyle = '#ffeb3b';
+            pbCtx.fillRect(ball.x, ball.y, ball.size, ball.size);
 
-        pinballAnimFrame = requestAnimationFrame(pinballLoop);
-    }
-
-    let verhoerStarted = false;
-    
-    function initVerhoer() {
-        const chat = document.getElementById('verhoer-chat');
-        if (!verhoerStarted) {
-            chat.innerHTML = '<div style="color: #000080; margin-bottom: 8px;"><b>System:</b> Was ist dein nächstes Ziel?</div>';
-            verhoerStarted = true;
+            pinballAnimFrame = requestAnimationFrame(pinballLoop);
         }
-        setTimeout(() => document.getElementById('verhoer-input').focus(), 100);
-    }
 
-    function sendVerhoer() {
-        const input = document.getElementById('verhoer-input');
-        const text = input.value.trim();
-        if (!text) return;
-
-        const chat = document.getElementById('verhoer-chat');
+        let verhoerStarted = false;
         
-        // Nutzereingabe ins Chatfenster schreiben
-        chat.innerHTML += `<div style="color: #000; margin-bottom: 8px;"><b>Du:</b> ${text}</div>`;
-        input.value = '';
-        chat.scrollTop = chat.scrollHeight;
+        function initVerhoer() {
+            const chat = document.getElementById('verhoer-chat');
+            if (!verhoerStarted) {
+                chat.innerHTML = '<div style="color: #000080; margin-bottom: 8px;"><b>System:</b> Was ist dein nächstes Ziel?</div>';
+                verhoerStarted = true;
+            }
+            setTimeout(() => document.getElementById('verhoer-input').focus(), 100);
+        }
 
-        // Programm antwortet immer und ewig mit der gleichen Frage
-        setTimeout(() => {
-            chat.innerHTML += `<div style="color: #000080; margin-bottom: 8px;"><b>System:</b> Und dann?</div>`;
+        function sendVerhoer() {
+            const input = document.getElementById('verhoer-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const chat = document.getElementById('verhoer-chat');
+            
+            chat.innerHTML += `<div style="color: #000; margin-bottom: 8px;"><b>Du:</b> ${text}</div>`;
+            input.value = '';
             chat.scrollTop = chat.scrollHeight;
-        }, 600); // 600ms Verzögerung, als ob das System kurz "nachdenkt"
-    }
 
-</script>
+            setTimeout(() => {
+                chat.innerHTML += `<div style="color: #000080; margin-bottom: 8px;"><b>System:</b> Und dann?</div>`;
+                chat.scrollTop = chat.scrollHeight;
+            }, 600); 
+        }
+
+    </script>
 </body>
 </html>
