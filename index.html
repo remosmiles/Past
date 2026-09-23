@@ -7,7 +7,7 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&family=Pixelify+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&family=Press+Start+2P&family=Pixelify+Sans:wght@400;600&display=swap" rel="stylesheet">
 
     <style>
         :root {
@@ -44,9 +44,7 @@
             color: var(--modern-text);
             transition: opacity 0.5s ease-out, transform 0.5s ease-in;
             position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 100;
+            top: 0; left: 0; z-index: 100;
         }
 
         .title-modern {
@@ -83,20 +81,51 @@
             background-color: var(--retro-bg);
             font-family: 'Pixelify Sans', 'MS Sans Serif', Tahoma, sans-serif;
             position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 1;
+            top: 0; left: 0; z-index: 1;
+            /* Pixeliger Cursor */
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="28" shape-rendering="crispEdges"><path fill="black" d="M0,0 l14,14 h-6 l3.5,7 l-2.5,1 l-3.5,-7 l-3.5,3.5 Z"/><path fill="white" d="M1,2 l10,10 h-4.5 l3.5,7 l-0.5,0.5 l-3.5,-7 l-3,3 Z"/></svg>'), auto;
         }
 
-        #retro-view * {
-            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="28" shape-rendering="crispEdges"><path fill="black" d="M0,0 l14,14 h-6 l3.5,7 l-2.5,1 l-3.5,-7 l-3.5,3.5 Z"/><path fill="white" d="M1,2 l10,10 h-4.5 l3.5,7 l-0.5,0.5 l-3.5,-7 l-3,3 Z"/></svg>'), auto !important;
+        /* Pixel-Art überall erzwingen */
+        #retro-view, #retro-view * {
+            image-rendering: pixelated !important;
+            cursor: inherit;
+        }
+
+        /* CRT Scanlines und Vignette */
+        .crt-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none;
+            z-index: 9999;
+            background: 
+                linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 4px, 6px 100%;
+            animation: flicker 0.15s infinite;
+        }
+
+        .crt-vignette {
+            position: absolute;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none;
+            z-index: 9998;
+            background: radial-gradient(circle at center, transparent 50%, rgba(0,0,0,0.6) 100%);
+        }
+
+        @keyframes flicker {
+            0% { opacity: 0.95; }
+            20% { opacity: 0.85; }
+            40% { opacity: 0.95; }
+            60% { opacity: 1; }
+            80% { opacity: 0.90; }
+            100% { opacity: 0.95; }
         }
 
         .desktop-icons-container {
             position: relative;
             width: 100%;
-            height: calc(100% - 32px); /* Minus Taskleiste */
+            height: calc(100% - 32px);
             padding: 10px;
             box-sizing: border-box;
         }
@@ -113,47 +142,42 @@
         }
 
         .desktop-icon svg {
-            width: 40px;
-            height: 40px;
+            width: 40px; height: 40px;
             margin-bottom: 4px;
             shape-rendering: crispEdges;
+            filter: drop-shadow(2px 2px 0px rgba(0,0,0,0.5));
         }
 
         .desktop-icon span {
-            color: white;
-            font-size: 13px;
+            color: white; font-size: 13px;
             padding: 2px 4px;
             text-shadow: 1px 1px 0 #000;
-            line-height: 1.2;
-            word-wrap: break-word;
+            line-height: 1.2; word-wrap: break-word;
             max-width: 100%;
         }
 
-        .desktop-icon:active span, .desktop-icon.selected span {
+        .desktop-icon:active span {
             background-color: var(--win-blue);
             border: 1px dotted white;
-            text-shadow: none;
-            padding: 1px 3px;
+            text-shadow: none; padding: 1px 3px;
         }
 
-        /* Icon Positionen */
+        /* Positionen der Icons */
         .icon-pos-1 { top: 10px; left: 10px; }
         .icon-pos-2 { top: 90px; left: 10px; }
         .icon-pos-3 { top: 170px; left: 10px; }
         .icon-pos-4 { top: 250px; left: 10px; }
         .icon-pos-5 { top: 10px; left: 100px; }
         .icon-pos-6 { top: 90px; left: 100px; }
+        .icon-pos-7 { top: 170px; left: 100px; } /* Security */
+        .icon-pos-8 { top: 250px; left: 100px; } /* Pinball */
         
         .interactive-center {
-            top: 50%;
-            left: 50%;
+            top: 50%; left: 50%;
             transform: translate(-50%, -50%);
             width: 100px;
         }
-        .interactive-center svg {
-            width: 50px;
-            height: 50px;
-        }
+        .interactive-center svg { width: 50px; height: 50px; }
 
         .win95-border {
             background-color: var(--win-gray);
@@ -176,14 +200,12 @@
         .window {
             display: none;
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            top: 20%; left: 20%;
             padding: 2px;
             z-index: 20;
-            min-width: 300px;
+            min-width: 250px;
             max-width: 90vw;
-            box-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+            box-shadow: 4px 4px 0px rgba(0,0,0,0.5); /* Retro harter Schatten */
         }
 
         .title-bar {
@@ -196,7 +218,9 @@
             font-size: 14px;
             font-weight: 600;
             letter-spacing: 1px;
+            cursor: grab; /* Draggable Indikator */
         }
+        .title-bar:active { cursor: grabbing; }
 
         .close-btn {
             background-color: var(--win-gray);
@@ -204,16 +228,12 @@
             border-left: 2px solid var(--win-light);
             border-right: 2px solid var(--win-dark);
             border-bottom: 2px solid var(--win-dark);
-            font-family: inherit;
-            font-weight: bold;
-            font-size: 12px;
-            width: 20px;
-            height: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            font-family: inherit; font-weight: bold; font-size: 12px;
+            width: 20px; height: 20px;
+            display: flex; justify-content: center; align-items: center;
             padding: 0;
             box-shadow: inset 1px 1px 0px var(--win-light-gray), inset -1px -1px 0px var(--win-mid);
+            cursor: pointer;
         }
 
         .close-btn:active {
@@ -222,8 +242,7 @@
             border-right: 2px solid var(--win-light);
             border-bottom: 2px solid var(--win-light);
             box-shadow: inset 1px 1px 0px var(--win-mid), inset -1px -1px 0px var(--win-light-gray);
-            padding-top: 2px;
-            padding-left: 2px;
+            padding-top: 2px; padding-left: 2px;
         }
 
         .window-content {
@@ -234,98 +253,64 @@
             background: var(--win-gray);
         }
 
+        /* Ladebalken */
         .progress-container {
-            width: 100%;
-            height: 24px;
-            padding: 2px;
-            display: flex;
-            gap: 2px;
-            box-sizing: border-box;
-            background-color: var(--win-gray);
-            margin-top: 20px;
+            width: 100%; height: 24px; padding: 2px;
+            display: flex; gap: 2px; box-sizing: border-box;
+            background-color: var(--win-gray); margin-top: 20px;
         }
-
         .progress-block {
-            width: 16px;
-            height: 100%;
-            background-color: var(--win-blue);
+            width: 16px; height: 100%; background-color: var(--win-blue);
         }
 
-        /* Snake Game Container */
-        #snake-canvas {
-            background-color: #000;
-            display: block;
-            margin: 0 auto;
+        /* Canvas Spiele */
+        canvas {
+            display: block; margin: 0 auto;
             border: 2px solid var(--win-mid);
+            background-color: #000;
         }
-        
+
+        .arcade-font {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 10px;
+            color: #0f0;
+            text-shadow: 1px 1px 0 #000;
+        }
+
+        /* D-Pad für Mobile Snake */
         .d-pad {
-            display: grid;
-            grid-template-columns: 40px 40px 40px;
-            grid-template-rows: 40px 40px;
-            gap: 5px;
-            justify-content: center;
-            margin-top: 15px;
+            display: grid; grid-template-columns: 40px 40px 40px; grid-template-rows: 40px 40px;
+            gap: 5px; justify-content: center; margin-top: 15px;
         }
         .d-pad button {
             background: var(--win-gray);
-            border: 2px solid;
-            border-color: var(--win-light) var(--win-dark) var(--win-dark) var(--win-light);
-            font-weight: bold;
-            font-size: 18px;
+            border: 2px solid; border-color: var(--win-light) var(--win-dark) var(--win-dark) var(--win-light);
+            font-weight: bold; font-size: 18px;
         }
-        .d-pad button:active {
-            border-color: var(--win-dark) var(--win-light) var(--win-light) var(--win-dark);
-        }
+        .d-pad button:active { border-color: var(--win-dark) var(--win-light) var(--win-light) var(--win-dark); }
         .btn-up { grid-column: 2; grid-row: 1; }
         .btn-left { grid-column: 1; grid-row: 2; }
         .btn-down { grid-column: 2; grid-row: 2; }
         .btn-right { grid-column: 3; grid-row: 2; }
 
         .taskbar {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 32px;
-            background-color: var(--win-gray);
-            border-top: 2px solid var(--win-light);
-            display: flex;
-            align-items: center;
-            padding: 2px;
-            box-sizing: border-box;
-            z-index: 30;
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 32px;
+            background-color: var(--win-gray); border-top: 2px solid var(--win-light);
+            display: flex; align-items: center; padding: 2px; box-sizing: border-box; z-index: 5000;
         }
-
         .start-btn {
-            height: 100%;
-            padding: 0 8px;
-            display: flex;
-            align-items: center;
-            font-weight: bold;
-            font-size: 14px;
-            gap: 4px;
-            color: black;
+            height: 100%; padding: 0 8px; display: flex; align-items: center;
+            font-weight: bold; font-size: 14px; gap: 4px; color: black; cursor: pointer;
         }
-        
         .start-btn:active {
-            border-top: 2px solid var(--win-dark);
-            border-left: 2px solid var(--win-dark);
-            border-right: 2px solid var(--win-light);
-            border-bottom: 2px solid var(--win-light);
+            border-top: 2px solid var(--win-dark); border-left: 2px solid var(--win-dark);
+            border-right: 2px solid var(--win-light); border-bottom: 2px solid var(--win-light);
             box-shadow: inset 1px 1px 0px var(--win-mid), inset -1px -1px 0px var(--win-light-gray);
-            padding-top: 1px;
-            padding-left: 9px;
+            padding-top: 1px; padding-left: 9px;
         }
-
         .taskbar-tray {
-            margin-left: auto;
-            height: 100%;
-            padding: 0 8px;
-            display: flex;
-            align-items: center;
-            font-size: 12px;
-            color: black;
+            margin-left: auto; height: 100%; padding: 0 8px; display: flex; align-items: center;
+            font-size: 12px; color: black;
         }
     </style>
 </head>
@@ -337,91 +322,78 @@
     </div>
 
     <div id="retro-view">
+        <div class="crt-overlay"></div>
+        <div class="crt-vignette"></div>
         
         <div class="desktop-icons-container">
             <!-- Icon: Arbeitsplatz -->
             <div class="desktop-icon icon-pos-1" onclick="openQuoteWindow('Arbeitsplatz', 'Verberge deine Absichten.')">
-                <svg viewBox="0 0 64 64">
-                    <rect x="12" y="12" width="40" height="28" fill="#fff" stroke="#000" stroke-width="2"/>
-                    <rect x="16" y="16" width="32" height="20" fill="#008080" />
-                    <rect x="24" y="40" width="16" height="8" fill="#c0c0c0" stroke="#000" stroke-width="2"/>
-                    <rect x="12" y="48" width="40" height="8" fill="#c0c0c0" stroke="#000" stroke-width="2"/>
-                </svg>
+                <svg viewBox="0 0 64 64"><rect x="12" y="12" width="40" height="28" fill="#fff" stroke="#000" stroke-width="2"/><rect x="16" y="16" width="32" height="20" fill="#008080" /><rect x="24" y="40" width="16" height="8" fill="#c0c0c0" stroke="#000" stroke-width="2"/><rect x="12" y="48" width="40" height="8" fill="#c0c0c0" stroke="#000" stroke-width="2"/></svg>
                 <span>Arbeitsplatz</span>
             </div>
 
             <!-- Icon: Papierkorb -->
             <div class="desktop-icon icon-pos-2" onclick="openQuoteWindow('Papierkorb', 'Die Katze muss gerettet werden!')">
-                <svg viewBox="0 0 64 64">
-                    <path d="M16 20 h32 l-4 36 h-24 z" fill="#fff" stroke="#000" stroke-width="2"/>
-                    <rect x="12" y="12" width="40" height="8" fill="#c0c0c0" stroke="#000" stroke-width="2"/>
-                    <rect x="28" y="6" width="8" height="6" fill="#c0c0c0" stroke="#000" stroke-width="2"/>
-                    <line x1="24" y1="24" x2="24" y2="52" stroke="#000" stroke-width="2"/>
-                    <line x1="32" y1="24" x2="32" y2="52" stroke="#000" stroke-width="2"/>
-                    <line x1="40" y1="24" x2="40" y2="52" stroke="#000" stroke-width="2"/>
-                </svg>
+                <svg viewBox="0 0 64 64"><path d="M16 20 h32 l-4 36 h-24 z" fill="#fff" stroke="#000" stroke-width="2"/><rect x="12" y="12" width="40" height="8" fill="#c0c0c0" stroke="#000" stroke-width="2"/><rect x="28" y="6" width="8" height="6" fill="#c0c0c0" stroke="#000" stroke-width="2"/><line x1="24" y1="24" x2="24" y2="52" stroke="#000" stroke-width="2"/><line x1="32" y1="24" x2="32" y2="52" stroke="#000" stroke-width="2"/><line x1="40" y1="24" x2="40" y2="52" stroke="#000" stroke-width="2"/></svg>
                 <span>Papierkorb</span>
             </div>
 
             <!-- Icon: Editor -->
             <div class="desktop-icon icon-pos-3" onclick="openQuoteWindow('Editor', 'Ich werde der König der Piraten!')">
-                <svg viewBox="0 0 64 64">
-                    <rect x="16" y="8" width="32" height="48" fill="#fff" stroke="#000" stroke-width="2"/>
-                    <rect x="16" y="8" width="32" height="10" fill="#000080" stroke="#000" stroke-width="2"/>
-                    <line x1="22" y1="26" x2="42" y2="26" stroke="#000" stroke-width="2"/>
-                    <line x1="22" y1="34" x2="42" y2="34" stroke="#000" stroke-width="2"/>
-                    <line x1="22" y1="42" x2="38" y2="42" stroke="#000" stroke-width="2"/>
-                </svg>
+                <svg viewBox="0 0 64 64"><rect x="16" y="8" width="32" height="48" fill="#fff" stroke="#000" stroke-width="2"/><rect x="16" y="8" width="32" height="10" fill="#000080" stroke="#000" stroke-width="2"/><line x1="22" y1="26" x2="42" y2="26" stroke="#000" stroke-width="2"/><line x1="22" y1="34" x2="42" y2="34" stroke="#000" stroke-width="2"/><line x1="22" y1="42" x2="38" y2="42" stroke="#000" stroke-width="2"/></svg>
                 <span>Editor</span>
             </div>
 
             <!-- Icon: Internet -->
             <div class="desktop-icon icon-pos-4" onclick="openQuoteWindow('Internet', 'Bambus News: Alles was du wissen musst.')">
-                <svg viewBox="0 0 64 64">
-                    <circle cx="32" cy="32" r="24" fill="#fff" stroke="#000" stroke-width="2"/>
-                    <path d="M14,32 Q32,8 50,32 Q32,56 14,32" fill="none" stroke="#000080" stroke-width="2"/>
-                    <path d="M32,8 Q16,32 32,56 Q48,32 32,8" fill="none" stroke="#000080" stroke-width="2"/>
-                    <line x1="8" y1="32" x2="56" y2="32" stroke="#000080" stroke-width="2"/>
-                </svg>
+                <svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="24" fill="#fff" stroke="#000" stroke-width="2"/><path d="M14,32 Q32,8 50,32 Q32,56 14,32" fill="none" stroke="#000080" stroke-width="2"/><path d="M32,8 Q16,32 32,56 Q48,32 32,8" fill="none" stroke="#000080" stroke-width="2"/><line x1="8" y1="32" x2="56" y2="32" stroke="#000080" stroke-width="2"/></svg>
                 <span>Internet</span>
             </div>
 
             <!-- Icon: Paint -->
             <div class="desktop-icon icon-pos-5" onclick="openQuoteWindow('Paint', 'Kunst wäscht den Staub des Alltags von der Seele.')">
-                <svg viewBox="0 0 64 64">
-                    <ellipse cx="32" cy="32" rx="24" ry="20" fill="#fff" stroke="#000" stroke-width="2"/>
-                    <circle cx="20" cy="26" r="4" fill="#f00"/>
-                    <circle cx="32" cy="20" r="4" fill="#0f0"/>
-                    <circle cx="44" cy="26" r="4" fill="#00f"/>
-                    <circle cx="38" cy="38" r="4" fill="#ff0"/>
-                    <circle cx="24" cy="40" r="4" fill="#000"/>
-                </svg>
+                <svg viewBox="0 0 64 64"><ellipse cx="32" cy="32" rx="24" ry="20" fill="#fff" stroke="#000" stroke-width="2"/><circle cx="20" cy="26" r="4" fill="#f00"/><circle cx="32" cy="20" r="4" fill="#0f0"/><circle cx="44" cy="26" r="4" fill="#00f"/><circle cx="38" cy="38" r="4" fill="#ff0"/><circle cx="24" cy="40" r="4" fill="#000"/></svg>
                 <span>Paint</span>
             </div>
 
             <!-- Icon: P.enis.jpg -->
             <div class="desktop-icon icon-pos-6" onclick="openQuoteWindow('Bildanzeige', 'Ein Bild sagt mehr als tausend Worte.')">
-                <svg viewBox="0 0 64 64">
-                    <rect x="12" y="14" width="40" height="36" fill="#fff" stroke="#000" stroke-width="2"/>
-                    <circle cx="22" cy="24" r="4" fill="#ffeb3b" stroke="#000" stroke-width="1"/>
-                    <polygon points="12,50 32,30 42,40 48,34 52,40 52,50" fill="#4caf50" stroke="#000" stroke-width="1"/>
-                </svg>
+                <svg viewBox="0 0 64 64"><rect x="12" y="14" width="40" height="36" fill="#fff" stroke="#000" stroke-width="2"/><circle cx="22" cy="24" r="4" fill="#ffeb3b" stroke="#000" stroke-width="1"/><polygon points="12,50 32,30 42,40 48,34 52,40 52,50" fill="#4caf50" stroke="#000" stroke-width="1"/></svg>
                 <span>P.enis.jpg</span>
+            </div>
+
+            <!-- NEU Icon: Security.exe (FNAF) -->
+            <div class="desktop-icon icon-pos-7" onclick="openApp('security-window', initSecurity)">
+                <svg viewBox="0 0 64 64">
+                    <rect x="16" y="20" width="32" height="24" fill="#333" stroke="#000" stroke-width="2"/>
+                    <circle cx="24" cy="32" r="4" fill="#f00"/>
+                    <circle cx="40" cy="32" r="4" fill="#f00"/>
+                    <path d="M24 20 L20 12 M40 20 L44 12" stroke="#000" stroke-width="2"/>
+                </svg>
+                <span>Security.exe</span>
+            </div>
+
+            <!-- NEU Icon: Pinball.exe -->
+            <div class="desktop-icon icon-pos-8" onclick="openApp('pinball-window', initPinball)">
+                <svg viewBox="0 0 64 64">
+                    <rect x="12" y="10" width="40" height="44" fill="#000080" stroke="#000" stroke-width="2"/>
+                    <circle cx="32" cy="24" r="6" fill="#c0c0c0"/>
+                    <line x1="20" y1="44" x2="30" y2="48" stroke="#ffeb3b" stroke-width="3"/>
+                    <line x1="44" y1="44" x2="34" y2="48" stroke="#ffeb3b" stroke-width="3"/>
+                </svg>
+                <span>Pinball.exe</span>
             </div>
 
             <!-- Icon: Geheimnis (Zentriert) -->
             <div class="desktop-icon interactive-center" onclick="openSecretWindow()">
-                <svg viewBox="0 0 64 64">
-                    <rect x="6" y="12" width="26" height="10" fill="#fbc02d" stroke="#000" stroke-width="2"/>
-                    <rect x="6" y="20" width="52" height="34" fill="#fff59d" stroke="#000" stroke-width="2"/>
-                    <rect x="6" y="22" width="52" height="2" fill="#fff" opacity="0.5"/>
-                </svg>
+                <svg viewBox="0 0 64 64"><rect x="6" y="12" width="26" height="10" fill="#fbc02d" stroke="#000" stroke-width="2"/><rect x="6" y="20" width="52" height="34" fill="#fff59d" stroke="#000" stroke-width="2"/><rect x="6" y="22" width="52" height="2" fill="#fff" opacity="0.5"/></svg>
                 <span>Geheimnis</span>
             </div>
         </div>
 
-        <div id="quote-window" class="window win95-border">
-            <div class="title-bar">
+        <!-- Zitat Fenster -->
+        <div id="quote-window" class="window win95-border drag-window">
+            <div class="title-bar drag-handle">
                 <span id="quote-title">Nachricht</span>
                 <button class="close-btn" onclick="closeWindow('quote-window')">X</button>
             </div>
@@ -433,51 +405,69 @@
             </div>
         </div>
 
-        <div id="secret-window" class="window win95-border" style="width: 350px;">
-            <div class="title-bar">
+        <!-- Geheimnis Fenster -->
+        <div id="secret-window" class="window win95-border drag-window" style="width: 350px;">
+            <div class="title-bar drag-handle">
                 <span>Update.exe</span>
                 <button class="close-btn" onclick="closeSecretWindow()">X</button>
             </div>
             <div class="window-content">
-                <div style="margin-bottom: 20px; line-height: 1.5;">
-                    Die Welt ändert sich bald.<br>
-                    Etwas neues kommt auch uns zu.
+                <div style="margin-bottom: 20px; line-height: 1.5; font-family: 'Press Start 2P', sans-serif; font-size: 10px; color: #ff0000;">
+                    Die Welt ändert sich bald.<br><br>
+                    Etwas neues kommt auf uns zu.
                 </div>
                 <div class="win95-inset">
-                    <div class="progress-container" id="progress-container">
-                        <!-- Blöcke werden per JS hinzugefügt -->
-                    </div>
+                    <div class="progress-container" id="progress-container"></div>
                 </div>
             </div>
         </div>
 
-        <div id="snake-window" class="window win95-border" style="width: 320px;">
-            <div class="title-bar">
+        <!-- Snake Fenster -->
+        <div id="snake-window" class="window win95-border drag-window" style="width: 250px;">
+            <div class="title-bar drag-handle">
                 <span>Snake.exe</span>
-                <button class="close-btn" onclick="closeSnakeWindow()">X</button>
+                <button class="close-btn" onclick="closeApp('snake-window', snakeGameInterval)">X</button>
             </div>
             <div class="window-content">
                 <canvas id="snake-canvas" width="200" height="200"></canvas>
-                
-                <!-- On-Screen D-Pad für Touch/Mobile -->
                 <div class="d-pad">
                     <button class="btn-up" onmousedown="setSnakeDir(0, -1)" ontouchstart="setSnakeDir(0, -1); event.preventDefault()">▲</button>
                     <button class="btn-left" onmousedown="setSnakeDir(-1, 0)" ontouchstart="setSnakeDir(-1, 0); event.preventDefault()">◀</button>
                     <button class="btn-down" onmousedown="setSnakeDir(0, 1)" ontouchstart="setSnakeDir(0, 1); event.preventDefault()">▼</button>
                     <button class="btn-right" onmousedown="setSnakeDir(1, 0)" ontouchstart="setSnakeDir(1, 0); event.preventDefault()">▶</button>
                 </div>
-                <div style="margin-top: 10px; font-size: 12px;">Pfeiltasten oder Buttons nutzen!</div>
             </div>
         </div>
 
+        <!-- Security (FNAF) Fenster -->
+        <div id="security-window" class="window win95-border drag-window" style="width: 320px;">
+            <div class="title-bar drag-handle" style="background-color: #333;">
+                <span>CAM_04 - Security.exe</span>
+                <button class="close-btn" onclick="closeApp('security-window', securityAnimFrame)">X</button>
+            </div>
+            <div class="window-content" style="background-color: #000;">
+                <canvas id="security-canvas" width="280" height="200" style="border: 4px solid #333;"></canvas>
+                <div class="arcade-font" style="margin-top: 10px; color: red;">SIGNAL LOST...</div>
+            </div>
+        </div>
+
+        <!-- Pinball Fenster -->
+        <div id="pinball-window" class="window win95-border drag-window" style="width: 260px;">
+            <div class="title-bar drag-handle">
+                <span>Pinball.exe</span>
+                <button class="close-btn" onclick="closeApp('pinball-window', pinballAnimFrame)">X</button>
+            </div>
+            <div class="window-content">
+                <canvas id="pinball-canvas" width="220" height="300"></canvas>
+                <div class="arcade-font" style="margin-top: 10px; font-size: 8px;">Klick auf das Fenster zum Flippern!</div>
+            </div>
+        </div>
+
+        <!-- Taskleiste -->
         <div class="taskbar">
-            <!-- Start-Button öffnet nun das Snake-Fenster! -->
-            <div class="win95-border start-btn" onclick="openSnakeWindow()">
-                <svg viewBox="0 0 20 20">
-                    <rect x="0" y="0" width="8" height="8" fill="#f44336"/>
-                    <rect x="10" y="0" width="8" height="8" fill="#4caf50"/>
-                    <rect x="0" y="10" width="8" height="8" fill="#2196f3"/>
-                    <rect x="10" y="10" width="8" height="8" fill="#ffeb3b"/>
+            <div class="win95-border start-btn" onclick="openApp('snake-window', initSnake)">
+                <svg viewBox="0 0 20 20" width="16" height="16">
+                    <rect x="0" y="0" width="8" height="8" fill="#f44336"/><rect x="10" y="0" width="8" height="8" fill="#4caf50"/><rect x="0" y="10" width="8" height="8" fill="#2196f3"/><rect x="10" y="10" width="8" height="8" fill="#ffeb3b"/>
                 </svg>
                 Start
             </div>
@@ -489,11 +479,10 @@
     </div>
 
     <script>
-        // --- System Variablen ---
         let isTimeTraveling = false;
-        let highestZIndex = 50;
+        let highestZIndex = 100;
 
-        // --- Vollbild & Ansichtswechsel ---
+        // Vollbild & Wechsel
         function triggerTimeTravel() {
             if(isTimeTraveling) return;
             isTimeTraveling = true;
@@ -515,6 +504,7 @@
                 modernView.style.display = 'none';
                 retroView.style.display = 'block';
                 updateClock();
+                setupDraggableWindows();
             }, 500);
         }
 
@@ -522,16 +512,13 @@
             const clockEl = document.getElementById('clock-display');
             setInterval(() => {
                 const now = new Date();
-                let h = now.getHours();
-                let m = now.getMinutes();
+                let h = now.getHours(); let m = now.getMinutes();
                 const ampm = h >= 12 ? 'PM' : 'AM';
-                h = h % 12 || 12;
-                m = m < 10 ? '0' + m : m;
+                h = h % 12 || 12; m = m < 10 ? '0' + m : m;
                 clockEl.textContent = `${h}:${m} ${ampm}`;
             }, 1000);
         }
 
-        // --- Fenster Management ---
         function bringToFront(id) {
             highestZIndex++;
             document.getElementById(id).style.zIndex = highestZIndex;
@@ -541,26 +528,67 @@
             document.getElementById(id).style.display = 'none';
         }
 
-        // --- Zitate Popups ---
+        function openApp(id, initFunc) {
+            const win = document.getElementById(id);
+            if(win.style.display === 'block') { bringToFront(id); return; }
+            win.style.display = 'block';
+            bringToFront(id);
+            if(initFunc) initFunc();
+        }
+
+        function closeApp(id, cancelVar) {
+            closeWindow(id);
+            if(typeof cancelVar === 'number') {
+                clearInterval(cancelVar);
+                cancelAnimationFrame(cancelVar);
+            }
+        }
+
+        // Draggable Logic
+        function setupDraggableWindows() {
+            const windows = document.querySelectorAll('.drag-window');
+            windows.forEach(win => {
+                const handle = win.querySelector('.drag-handle');
+                let isDragging = false;
+                let offsetX, offsetY;
+
+                handle.addEventListener('mousedown', (e) => {
+                    isDragging = true;
+                    bringToFront(win.id);
+                    offsetX = e.clientX - win.offsetLeft;
+                    offsetY = e.clientY - win.offsetTop;
+                });
+
+                document.addEventListener('mousemove', (e) => {
+                    if (!isDragging) return;
+                    win.style.left = `${e.clientX - offsetX}px`;
+                    win.style.top = `${e.clientY - offsetY}px`;
+                });
+
+                document.addEventListener('mouseup', () => {
+                    isDragging = false;
+                });
+            });
+        }
+
+        // Zitate
         function openQuoteWindow(title, text) {
             document.getElementById('quote-title').innerText = title;
             document.getElementById('quote-text').innerText = text;
             const win = document.getElementById('quote-window');
             win.style.display = 'block';
-            
-            // Leichter Offset damit sie nicht genau übereinander liegen
-            const offset = (highestZIndex % 5) * 10;
-            win.style.top = `calc(50% + ${offset}px)`;
-            win.style.left = `calc(50% + ${offset}px)`;
-            
+            const offset = (highestZIndex % 5) * 15;
+            win.style.top = `calc(30% + ${offset}px)`;
+            win.style.left = `calc(30% + ${offset}px)`;
             bringToFront('quote-window');
         }
 
-        // --- Geheimnis (Ladebalken) ---
+        // Geheimnis
         let progressInterval;
         function openSecretWindow() {
             const win = document.getElementById('secret-window');
             win.style.display = 'block';
+            win.style.top = '50%'; win.style.left = '50%'; win.style.transform = 'translate(-50%, -50%)';
             bringToFront('secret-window');
             startProgressBar();
         }
@@ -573,9 +601,7 @@
         function startProgressBar() {
             const container = document.getElementById('progress-container');
             container.innerHTML = ''; 
-            let blocksAdded = 0;
-            const maxBlocks = 18; 
-            
+            let blocksAdded = 0; const maxBlocks = 18; 
             clearInterval(progressInterval);
             progressInterval = setInterval(() => {
                 if (blocksAdded < maxBlocks) {
@@ -586,60 +612,34 @@
                 } else {
                     clearInterval(progressInterval);
                 }
-            }, 1500); // Extrem langsam: 1.5 Sekunden pro Block
+            }, 2000); // Sehr langsam
         }
 
-        // --- STREAMING_CHUNK:Snake Game Logik ---
         let snakeGameInterval;
-        let snake = [];
-        let food = {};
-        let dir = {x: 1, y: 0};
-        let nextDir = {x: 1, y: 0};
-        const gridSize = 10;
-        const canvasSize = 200;
-        const ctx = document.getElementById('snake-canvas').getContext('2d');
-
-        function openSnakeWindow() {
-            const win = document.getElementById('snake-window');
-            if(win.style.display === 'block') return; // Bereits offen
-            
-            win.style.display = 'block';
-            bringToFront('snake-window');
-            initSnake();
-        }
-
-        function closeSnakeWindow() {
-            closeWindow('snake-window');
-            clearInterval(snakeGameInterval);
-        }
+        let snake = []; let food = {}; let dir = {x: 1, y: 0}; let nextDir = {x: 1, y: 0};
+        const sGrid = 10; const sSize = 200;
+        const sCtx = document.getElementById('snake-canvas').getContext('2d');
 
         function initSnake() {
             snake = [{x: 10, y: 10}, {x: 9, y: 10}, {x: 8, y: 10}];
-            dir = {x: 1, y: 0};
-            nextDir = {x: 1, y: 0};
+            dir = {x: 1, y: 0}; nextDir = {x: 1, y: 0};
             spawnFood();
             clearInterval(snakeGameInterval);
-            snakeGameInterval = setInterval(gameLoop, 150);
+            snakeGameInterval = setInterval(snakeLoop, 150);
         }
 
         function spawnFood() {
-            food = {
-                x: Math.floor(Math.random() * (canvasSize / gridSize)),
-                y: Math.floor(Math.random() * (canvasSize / gridSize))
-            };
+            food = { x: Math.floor(Math.random() * (sSize / sGrid)), y: Math.floor(Math.random() * (sSize / sGrid)) };
         }
 
         function setSnakeDir(x, y) {
-            // Verhindern, dass Snake direkt in sich selbst umkehrt
             if(x !== 0 && dir.x === -x) return;
             if(y !== 0 && dir.y === -y) return;
             nextDir = {x, y};
         }
 
-        // Keyboard Steuerung
         window.addEventListener('keydown', e => {
             if(document.getElementById('snake-window').style.display !== 'block') return;
-            
             switch(e.key) {
                 case 'ArrowUp': setSnakeDir(0, -1); break;
                 case 'ArrowDown': setSnakeDir(0, 1); break;
@@ -648,48 +648,130 @@
             }
         });
 
-        function gameLoop() {
+        function snakeLoop() {
             dir = nextDir;
             const head = {x: snake[0].x + dir.x, y: snake[0].y + dir.y};
-
-            // Wand-Kollision
-            if (head.x < 0 || head.x >= canvasSize/gridSize || head.y < 0 || head.y >= canvasSize/gridSize) {
-                initSnake(); return;
-            }
-            // Selbst-Kollision
-            for (let i = 0; i < snake.length; i++) {
-                if (head.x === snake[i].x && head.y === snake[i].y) {
-                    initSnake(); return;
-                }
-            }
-
+            if (head.x < 0 || head.x >= sSize/sGrid || head.y < 0 || head.y >= sSize/sGrid) { initSnake(); return; }
+            for (let i = 0; i < snake.length; i++) { if (head.x === snake[i].x && head.y === snake[i].y) { initSnake(); return; } }
             snake.unshift(head);
+            if (head.x === food.x && head.y === food.y) spawnFood(); else snake.pop();
 
-            // Essen getroffen?
-            if (head.x === food.x && head.y === food.y) {
-                spawnFood();
-            } else {
-                snake.pop();
+            sCtx.fillStyle = '#000'; sCtx.fillRect(0, 0, sSize, sSize);
+            sCtx.fillStyle = '#f00'; sCtx.fillRect(food.x * sGrid, food.y * sGrid, sGrid - 1, sGrid - 1);
+            sCtx.fillStyle = '#0f0';
+            snake.forEach(part => { sCtx.fillRect(part.x * sGrid, part.y * sGrid, sGrid - 1, sGrid - 1); });
+        }
+
+        let securityAnimFrame;
+        const secCanvas = document.getElementById('security-canvas');
+        const secCtx = secCanvas.getContext('2d');
+        
+        function initSecurity() {
+            cancelAnimationFrame(securityAnimFrame);
+            securityLoop();
+        }
+
+        function securityLoop() {
+            const w = secCanvas.width; const h = secCanvas.height;
+            const imgData = secCtx.createImageData(w, h);
+            const data = imgData.data;
+            
+            // TV Rauschen generieren
+            for (let i = 0; i < data.length; i += 4) {
+                const noise = Math.random() * 255;
+                // Grünstichiges Rauschen für Kamera-Look
+                data[i] = noise * 0.2;     // R
+                data[i+1] = noise * 0.8;   // G
+                data[i+2] = noise * 0.2;   // B
+                data[i+3] = 255;           // A
+            }
+            secCtx.putImageData(imgData, 0, 0);
+
+            // Glitchy Augen zeichnen (flackernd)
+            if(Math.random() > 0.85) {
+                secCtx.fillStyle = 'white';
+                secCtx.fillRect(100 + (Math.random()*4-2), 80 + (Math.random()*4-2), 15, 15);
+                secCtx.fillRect(160 + (Math.random()*4-2), 80 + (Math.random()*4-2), 15, 15);
+                
+                // Rote Pupillen
+                secCtx.fillStyle = 'red';
+                secCtx.fillRect(105, 85, 5, 5);
+                secCtx.fillRect(165, 85, 5, 5);
+            }
+            
+            // Scanline Artefakte
+            if(Math.random() > 0.9) {
+                secCtx.fillStyle = 'rgba(0,0,0,0.5)';
+                secCtx.fillRect(0, Math.random()*h, w, Math.random()*20);
             }
 
-            drawSnake();
+            securityAnimFrame = requestAnimationFrame(securityLoop);
         }
 
-        function drawSnake() {
-            // Hintergrund
-            ctx.fillStyle = '#000';
-            ctx.fillRect(0, 0, canvasSize, canvasSize);
-
-            // Essen
-            ctx.fillStyle = '#f00';
-            ctx.fillRect(food.x * gridSize, food.y * gridSize, gridSize - 1, gridSize - 1);
-
-            // Snake
-            ctx.fillStyle = '#0f0';
-            snake.forEach(part => {
-                ctx.fillRect(part.x * gridSize, part.y * gridSize, gridSize - 1, gridSize - 1);
-            });
+        let pinballAnimFrame;
+        const pbCanvas = document.getElementById('pinball-canvas');
+        const pbCtx = pbCanvas.getContext('2d');
+        let ball = { x: 110, y: 50, vx: 3, vy: 3, size: 6 };
+        let paddle = { x: 80, y: 280, w: 60, h: 10 };
+        
+        function initPinball() {
+            cancelAnimationFrame(pinballAnimFrame);
+            ball = { x: 110, y: 50, vx: 4, vy: 4, size: 6 };
+            pinballLoop();
         }
+
+        // Klick um den Flipper/Paddle zu bewegen
+        pbCanvas.addEventListener('mousedown', (e) => {
+            const rect = pbCanvas.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            paddle.x = clickX - (paddle.w / 2);
+            // Begrenzung
+            if(paddle.x < 0) paddle.x = 0;
+            if(paddle.x + paddle.w > pbCanvas.width) paddle.x = pbCanvas.width - paddle.w;
+        });
+
+        function pinballLoop() {
+            const w = pbCanvas.width; const h = pbCanvas.height;
+            
+            // Motion Blur / Trail Effekt
+            pbCtx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+            pbCtx.fillRect(0, 0, w, h);
+
+            // Ball Update
+            ball.x += ball.vx;
+            ball.y += ball.vy;
+
+            // Wand Kollisionen
+            if (ball.x <= 0 || ball.x >= w - ball.size) ball.vx *= -1;
+            if (ball.y <= 0) ball.vy *= -1;
+            
+            // Boden (Game Over / Reset)
+            if (ball.y >= h) {
+                ball.x = 110; ball.y = 50; ball.vy = 4; ball.vx = (Math.random() > 0.5 ? 4 : -4);
+            }
+
+            // Paddle Kollision
+            if (ball.y + ball.size >= paddle.y && ball.x >= paddle.x && ball.x <= paddle.x + paddle.w) {
+                ball.vy *= -1;
+                ball.y = paddle.y - ball.size; // Rausziehen um Steckenbleiben zu verhindern
+                // Leichter Drall je nach Aufschlagpunkt
+                let hitPos = (ball.x - (paddle.x + paddle.w/2)) / (paddle.w/2);
+                ball.vx = hitPos * 5; 
+            }
+
+            // Zeichne Paddle
+            pbCtx.fillStyle = '#000080';
+            pbCtx.fillRect(paddle.x, paddle.y, paddle.w, paddle.h);
+            pbCtx.strokeStyle = '#fff';
+            pbCtx.strokeRect(paddle.x, paddle.y, paddle.w, paddle.h);
+
+            // Zeichne Ball
+            pbCtx.fillStyle = '#ffeb3b';
+            pbCtx.fillRect(ball.x, ball.y, ball.size, ball.size);
+
+            pinballAnimFrame = requestAnimationFrame(pinballLoop);
+        }
+
     </script>
 </body>
 </html>
